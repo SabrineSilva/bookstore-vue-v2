@@ -1,0 +1,45 @@
+.sidebar {
+
+    background: linear-gradient(180deg, rgba(0, 16, 36, 0.85) 100%, rgba(0, 110, 255, 0) 100%);
+}
+
+.headersidebar {
+    display: flex;
+    justify-content: center;
+}
+
+.logo {
+    width: 180px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.sidebartext {
+    font-weight: thin;
+    font-size: 17px;
+    color: white;
+}
+
+span.wda {
+    font-weight: bold;
+}
+
+.icone-sidebar {
+position: relative;
+margin-left: -8px;
+
+}
+ 
+.icone-sidebar2 {
+    display: none;
+}
+/* Responsividade */
+@media (max-width: 1263px) {
+    .icone-sidebar {
+
+    display: none;
+}
+.icone-sidebar2 {
+    display: block;
+}
+}

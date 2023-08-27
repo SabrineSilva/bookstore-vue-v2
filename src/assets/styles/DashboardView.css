@@ -1,0 +1,83 @@
+
+.container-dashboard {
+    margin-top: 20px;
+   
+    
+}
+.text-title {
+    font-size: 30px;
+}
+.text-subtitle {
+    font-size: 20px;
+}
+
+span.text-toolbar-title {
+    font-size: 17px;
+
+}
+.image {
+
+    background-image: url('../Img/image.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.image2 {
+
+    background-image: url('../Img/image_2.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.image3 {
+
+    background-image: url('../Img/image_3.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.image4 {
+
+    background-image: url('../Img/image_4.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.bloco2 {
+    height: 400px;
+    overflow: auto;
+}
+
+.chart {
+
+    width: 600px;
+
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.toolbar-chart {
+    display: flex;
+    justify-content: center;
+}
+
+@media (max-width: 1904px) {
+    .chart {
+        width: 500px;
+    
+    }
+}
+
+@media (max-width: 1331px) {
+    .chart {
+        width: 400px;
+    
+    }
+}
+
+@media (max-width: 457px) {
+    .chart {
+        width: 300px;
+    
+    }
+}
