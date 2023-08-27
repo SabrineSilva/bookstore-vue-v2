@@ -1,6 +1,6 @@
 <template>
     <div class="main-container">
-        <!-- Tabela de dados usando Vuetify -->
+     
         <v-data-table
             sort-by="id"
             :search="search"
@@ -10,23 +10,23 @@
             :footer-props="{ itemsPerPageText: 'Registros por página:', itemsPerPageAllText: 'Exibir tudo' }"
             :header-props="{ sortByText: 'Ordenar por' }"
         >
-            <!-- Slot personalizado para a barra de ferramentas -->
+ 
             <template v-slot:top>
                 <v-toolbar flat>
-                    <!-- Título da página -->
+             
                     <v-toolbar-title>Usuários</v-toolbar-title>
                     <v-divider class="mx-4" inset vertical></v-divider>
 
-                    <!-- Diálogo para adicionar/editar -->
+       
                     <v-dialog persistent v-model="dialog" max-width="500px">
                         <template v-slot:activator="{ on, attrs }">
-                            <!-- Botão de adição -->
+                
                             <v-btn elevation="3" color="indigo lighten-1" v-bind="attrs" v-on="on" fab dark small>
                                 <v-icon>mdi-plus</v-icon>
                             </v-btn>
                         </template>
                         <v-card class="add-form rounded-xl pa-3">
-                            <!-- Título do formulário -->
+                   
 
                             <v-card-title class="justify-space-between" style="margin-bottom: 10px">
                                 <v-btn disabled style="opacity: 0">
@@ -42,7 +42,7 @@
                                 <v-form ref="form" lazy-validation>
                                     <v-row>
                                         <v-col>
-                                            <!-- Campos de entrada -->
+                                    
                                             <v-row class="mr-2" cols="12" sm="6" md="4">
                                                 <v-text-field
                                                     color="indigo lighten-1"
@@ -99,7 +99,7 @@
 
                     <v-spacer></v-spacer>
 
-                    <!-- Campo de pesquisa -->
+             
                     <v-text-field
                         v-model="search"
                         append-icon="mdi-magnify"
@@ -110,15 +110,19 @@
                 </v-toolbar>
             </template>
 
-            <!-- Slot personalizado para as ações na tabela -->
+
+
             <template v-slot:[`item.actions`]="{ item }">
-                <v-icon color="light-blue darken-2" class="edit-icon-table mr-2" @click="editItem(item)">
-                    mdi-pencil
-                </v-icon>
+        
+                    <v-icon color="light-blue darken-2" class="edit-icon-table mr-2" @click="editItem(item)">
+                        mdi-pencil
+                    </v-icon>
+              
                 <v-icon color="red lighten-1" class="delete-icon-table" @click="OnClickDelete(item)">
                     mdi-delete
                 </v-icon>
             </template>
+
             <template v-slot:no-data>
                 <span>Nada foi encontrado.</span>
             </template>
@@ -129,16 +133,16 @@
     </div>
 </template>
 
-<!-- Código do componente Vue -->
+
 <script>
 import UserApi from '@/services/UserService';
-import { showAlertToast, showAlertRemove, showAlertError } from '@/components/Toast';
+import { showAlertToast, showAlertRemove, showAlertError } from '@/components/sweetalert';
 
 export default {
     data: () => ({
-        // Array de todos os elementos da tabela
+
         users: [],
-        // Dados do componente
+     
         search: '',
         dialog: false,
         dialogDelete: false,
@@ -150,7 +154,7 @@ export default {
             { text: 'Endereço', value: 'endereco', align: 'start' },
             { text: 'Ações', value: 'actions', sortable: false, align: 'center' }
         ],
-        // Array do elemento único
+
         userItem: {
             id: null,
             nome: '',
@@ -158,7 +162,7 @@ export default {
             cidade: '',
             endereco: ''
         },
-        // Regras para a validação
+   
         rules: [
             (value) => !!value || 'Este campo é obrigatório.',
             (value) => (value || '').length <= 50 || 'Máximo de 50 caracteres'
@@ -174,7 +178,6 @@ export default {
             }
         ],
 
-        // Erros
         error: []
     }),
 
@@ -189,7 +192,6 @@ export default {
             });
         },
 
-        // Função para salvar/editar um item na tabela
         save() {
             if (this.$refs.form.validate()) {
                 UserApi.save(this.userItem)
@@ -210,13 +212,12 @@ export default {
                     });
             }
         },
-        // Função para editar um item da tabela
+    
         editItem(item) {
             this.userItem = Object.assign({}, item);
             this.dialog = true;
         },
 
-        // Função para fechar o diálogo de adição/edção - DO VUETIFY
         close() {
             this.dialog = false;
             this.userItem = {
@@ -229,7 +230,7 @@ export default {
             this.$refs.form.resetValidation();
         },
 
-        // Deletando um item da tabela
+   
         deleteItemConfirm(item) {
             UserApi.delete(item)
                 .then(() => {
@@ -276,14 +277,14 @@ export default {
     },
 
     computed: {
-        // Título dinâmico para o formulário de edição/adicão
+     
         formTitle() {
             return !this.userItem.id ? 'Novo Usuário' : 'Editar Usuário';
         }
     },
 
     watch: {
-        // Fechar diálogo de adição/editação quando 'dialog' muda para false
+       
         dialog(val) {
             val || this.close();
         }
@@ -291,7 +292,6 @@ export default {
 };
 </script>
 
-<!-- Estilos CSS -->
 <style>
 @import '../assets/styles/TableViews.css';
 </style>

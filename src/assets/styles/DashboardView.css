@@ -1,7 +1,6 @@
 
 .container-dashboard {
     margin-top: 20px;
-   
     
 }
 .text-title {
@@ -43,7 +42,7 @@ span.text-toolbar-title {
     background-position: center;
 }
 
-.bloco2 {
+.custom-container {
     height: 400px;
     overflow: auto;
 }
@@ -51,7 +50,6 @@ span.text-toolbar-title {
 .chart {
 
     width: 600px;
-
     margin-left: auto;
     margin-right: auto;
 }

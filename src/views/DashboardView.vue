@@ -10,126 +10,155 @@
                     </div>
                     <v-row justify="start" class="space">
                         <v-col>
-                            <v-item>
-                                <v-card
-                                    elevation="2"
-                                    class="d-flex align-center rounded-xl image"
-                                    height="170"
-                                    to="/Rental"
-                                >
-                                    <v-row>
-                                        <v-col sm="12">
-                                            <v-list-item three-line class="mt-3">
-                                                <v-list-item-content>
-                                                    <div class="mb-4">
-                                                        <v-icon
-                                                            x-large
-                                                            color="white
-"
-                                                            >mdi-book-account</v-icon
-                                                        >
-                                                    </div>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-item>
+                                        <v-card
+                                            v-bind="attrs"
+                                            v-on="on"
+                                            elevation="2"
+                                            class="d-flex align-center rounded-xl image"
+                                            height="170"
+                                            to="/Rental"
+                                        >
+                                            <v-row>
+                                                <v-col sm="12">
+                                                    <v-list-item three-line class="mt-3">
+                                                        <v-list-item-content>
+                                                            <div class="mb-4">
+                                                                <v-icon x-large color="white">mdi-book-account</v-icon>
+                                                            </div>
 
-                                                    <v-list-item-title class="headline mb-1 white--text">
-                                                        <strong>{{ totalRentals }}</strong>
-                                                    </v-list-item-title>
-                                                    <v-list-item-subtitle class="white--text"
-                                                        >Aluguéis</v-list-item-subtitle
-                                                    >
-                                                </v-list-item-content>
-                                            </v-list-item>
-                                        </v-col>
-                                    </v-row>
-                                </v-card>
-                            </v-item>
+                                                            <v-list-item-title class="headline mb-1 white--text">
+                                                                <strong>{{ totalRentals }}</strong>
+                                                            </v-list-item-title>
+                                                            <v-list-item-subtitle class="white--text"
+                                                                >Aluguéis</v-list-item-subtitle
+                                                            >
+                                                        </v-list-item-content>
+                                                    </v-list-item>
+                                                </v-col>
+                                            </v-row>
+                                        </v-card>
+                                    </v-item>
+                                </template>
+                                <span>Clique para acessar os Aluguéis.</span>
+                            </v-tooltip>
                         </v-col>
 
                         <v-col>
-                            <v-item>
-                                <v-card
-                                    elevation="1"
-                                    class="d-flex align-center rounded-xl image2"
-                                    height="170"
-                                    to="/Book"
-                                >
-                                    <v-row>
-                                        <v-col sm="12">
-                                            <v-list-item three-line class="mt-3">
-                                                <v-list-item-content>
-                                                    <div class="mb-4">
-                                                        <v-icon elevation="1" x-large color="white">mdi-book</v-icon>
-                                                    </div>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-item>
+                                        <v-card
+                                            v-bind="attrs"
+                                            v-on="on"
+                                            elevation="1"
+                                            class="d-flex align-center rounded-xl image2"
+                                            height="170"
+                                            to="/Book"
+                                        >
+                                            <v-row>
+                                                <v-col sm="12">
+                                                    <v-list-item three-line class="mt-3">
+                                                        <v-list-item-content>
+                                                            <div class="mb-4">
+                                                                <v-icon elevation="1" x-large color="white"
+                                                                    >mdi-book</v-icon
+                                                                >
+                                                            </div>
 
-                                                    <v-list-item-title class="headline mb-1 white--text">
-                                                        <strong>{{ totalBooks }}</strong>
-                                                    </v-list-item-title>
-                                                    <v-list-item-subtitle class="white--text"
-                                                        >Livros</v-list-item-subtitle
-                                                    >
-                                                </v-list-item-content>
-                                            </v-list-item>
-                                        </v-col>
-                                    </v-row>
-                                </v-card>
-                            </v-item>
+                                                            <v-list-item-title class="headline mb-1 white--text">
+                                                                <strong>{{ totalBooks }}</strong>
+                                                            </v-list-item-title>
+                                                            <v-list-item-subtitle class="white--text"
+                                                                >Livros</v-list-item-subtitle
+                                                            >
+                                                        </v-list-item-content>
+                                                    </v-list-item>
+                                                </v-col>
+                                            </v-row>
+                                        </v-card>
+                                    </v-item>
+                                </template>
+                                <span>Clique para acessar os Livros.</span>
+                            </v-tooltip>
                         </v-col>
                         <v-col>
-                            <v-item>
-                                <v-card
-                                    elevation="1"
-                                    class="d-flex align-center rounded-xl image3"
-                                    height="170"
-                                    to="/User"
-                                >
-                                    <v-row>
-                                        <v-col sm="12">
-                                            <v-list-item three-line class="mt-3">
-                                                <v-list-item-content>
-                                                    <div class="mb-4">
-                                                        <v-icon elevation="1" x-large color="white">mdi-account</v-icon>
-                                                    </div>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-item>
+                                        <v-card
+                                            v-bind="attrs"
+                                            v-on="on"
+                                            elevation="1"
+                                            class="d-flex align-center rounded-xl image3"
+                                            height="170"
+                                            to="/User"
+                                        >
+                                            <v-row>
+                                                <v-col sm="12">
+                                                    <v-list-item three-line class="mt-3">
+                                                        <v-list-item-content>
+                                                            <div class="mb-4">
+                                                                <v-icon elevation="1" x-large color="white"
+                                                                    >mdi-account</v-icon
+                                                                >
+                                                            </div>
 
-                                                    <v-list-item-title class="headline mb-1 white--text">
-                                                        <strong>{{ totalUsers }}</strong>
-                                                    </v-list-item-title>
-                                                    <v-list-item-subtitle class="white--text"
-                                                        >Usuários</v-list-item-subtitle
-                                                    >
-                                                </v-list-item-content>
-                                            </v-list-item>
-                                        </v-col>
-                                    </v-row>
-                                </v-card>
-                            </v-item>
+                                                            <v-list-item-title class="headline mb-1 white--text">
+                                                                <strong>{{ totalUsers }}</strong>
+                                                            </v-list-item-title>
+                                                            <v-list-item-subtitle class="white--text"
+                                                                >Usuários</v-list-item-subtitle
+                                                            >
+                                                        </v-list-item-content>
+                                                    </v-list-item>
+                                                </v-col>
+                                            </v-row>
+                                        </v-card>
+                                    </v-item>
+                                </template>
+                                <span>Clique para acessar os Usuários</span>
+                            </v-tooltip>
                         </v-col>
                         <v-col>
-                            <v-item>
-                                <v-card
-                                    elevation="1"
-                                    class="d-flex align-center rounded-xl image4"
-                                    height="170"
-                                    to="/Publisher"
-                                >
-                                    <v-row>
-                                        <v-col sm="12">
-                                            <v-list-item three-line class="mt-3">
-                                                <v-list-item-content>
-                                                    <div class="mb-4">
-                                                        <v-icon elevation="1" x-large color="white">mdi-city</v-icon>
-                                                    </div>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-item>
+                                        <v-card
+                                            v-bind="attrs"
+                                            v-on="on"
+                                            elevation="1"
+                                            class="d-flex align-center rounded-xl image4"
+                                            height="170"
+                                            to="/Publisher"
+                                        >
+                                            <v-row>
+                                                <v-col sm="12">
+                                                    <v-list-item three-line class="mt-3">
+                                                        <v-list-item-content>
+                                                            <div class="mb-4">
+                                                                <v-icon elevation="1" x-large color="white"
+                                                                    >mdi-city</v-icon
+                                                                >
+                                                            </div>
 
-                                                    <v-list-item-title class="headline mb-1 white--text">
-                                                        <strong>{{ totalPublishers }}</strong>
-                                                    </v-list-item-title>
-                                                    <v-list-item-subtitle class="white--text"
-                                                        >Editoras</v-list-item-subtitle
-                                                    >
-                                                </v-list-item-content>
-                                            </v-list-item>
-                                        </v-col>
-                                    </v-row>
-                                </v-card>
-                            </v-item>
+                                                            <v-list-item-title class="headline mb-1 white--text">
+                                                                <strong>{{ totalPublishers }}</strong>
+                                                            </v-list-item-title>
+                                                            <v-list-item-subtitle class="white--text"
+                                                                >Editoras</v-list-item-subtitle
+                                                            >
+                                                        </v-list-item-content>
+                                                    </v-list-item>
+                                                </v-col>
+                                            </v-row>
+                                        </v-card>
+                                    </v-item>
+                                </template>
+                                <span>Clique para acessar as Editoras.</span>
+                            </v-tooltip>
                         </v-col>
                     </v-row>
                 </v-item-group>
@@ -189,7 +218,7 @@
 
         <v-row>
             <v-col>
-                <div class="bloco2">
+                <div class="custom-container">
                     <v-toolbar color="rgba(0,0,0,0)" flat>
                         <v-icon color="red darken-3" class="mr-3"> mdi-timer-alert </v-icon>
                         <v-toolbar-title>Locações em Atraso ({{ formattedRentals.length }})</v-toolbar-title>
@@ -291,7 +320,7 @@ export default {
             datasets: [
                 {
                     label: 'Quantidade de aluguéis',
-                    backgroundColor: ['#b196ff', '#a096ff', '#96c3ff', '#96f4ff'],
+                    backgroundColor: ['#b196ff', '#a096ff', '#96c3ff', '#96f4ff', '#79d9b1'],
                     data: []
                 }
             ]
@@ -346,15 +375,13 @@ export default {
 
                     this.chartData.labels = labels;
                     this.chartData.datasets[0].data = data;
-
-                    this.renderChart();
                 })
                 .catch((error) => {
                     console.error('Error fetching books:', error);
                 });
         },
         loadLatestBooks() {
-            BookApi.list() // Busca todos os livros
+            BookApi.list() 
                 .then((response) => {
                     const allBooks = response.data;
                     const sortedBooks = allBooks.sort((a, b) => b.id - a.id);
@@ -366,7 +393,7 @@ export default {
         },
 
         loadLatestRentals() {
-            RentalApi.list() // Busca todos os livros
+            RentalApi.list() 
                 .then((response) => {
                     const allRentals = response.data;
                     const sortedRentals = allRentals.sort((a, b) => b.id - a.id);
