@@ -191,6 +191,17 @@ export default {
 
         error: []
     }),
+    computed: {
+        formTitle() {
+            return !this.BookItem.id ? 'Novo Livro' : 'Editar Livro';
+        }
+    },
+
+    watch: {
+        dialog(val) {
+            val || this.close();
+        }
+    },
 
     mounted() {
         this.list();
@@ -317,18 +328,6 @@ export default {
                         }
                     });
             }
-        }
-    },
-
-    computed: {
-        formTitle() {
-            return !this.BookItem.id ? 'Novo Livro' : 'Editar Livro';
-        }
-    },
-
-    watch: {
-        dialog(val) {
-            val || this.close();
         }
     }
 };

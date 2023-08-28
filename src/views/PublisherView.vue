@@ -9,24 +9,18 @@
             :footer-props="{ itemsPerPageText: 'Registros por página:', itemsPerPageAllText: 'Exibir tudo' }"
             :header-props="{ sortByText: 'Ordenar por' }"
         >
-        
             <template v-slot:top>
                 <v-toolbar flat>
-               
                     <v-toolbar-title>Editoras</v-toolbar-title>
                     <v-divider class="mx-4" inset vertical></v-divider>
 
-                 
                     <v-dialog persistent v-model="dialog" max-width="500px">
                         <template v-slot:activator="{ on, attrs }">
-                        
                             <v-btn elevation="3" color="indigo lighten-1" v-bind="attrs" v-on="on" fab dark small>
                                 <v-icon>mdi-plus</v-icon>
                             </v-btn>
                         </template>
                         <v-card class="add-form rounded-xl pa-3">
-                       
-
                             <v-card-title class="justify-space-between" style="margin-bottom: 10px">
                                 <v-btn disabled style="opacity: 0">
                                     <v-icon> mdi-close </v-icon>
@@ -41,7 +35,6 @@
                                 <v-form ref="form" lazy-validation>
                                     <v-row>
                                         <v-col>
-                                        
                                             <v-row class="mr-2" cols="12" sm="6" md="4">
                                                 <v-text-field
                                                     color="indigo lighten-1"
@@ -78,7 +71,6 @@
 
                     <v-spacer></v-spacer>
 
-             
                     <v-text-field
                         v-model="search"
                         append-icon="mdi-magnify"
@@ -89,7 +81,6 @@
                 </v-toolbar>
             </template>
 
-        
             <template v-slot:[`item.actions`]="{ item }">
                 <v-icon color="light-blue darken-2" class="edit-icon-table mr-2" @click="editItem(item)">
                     mdi-pencil
@@ -108,14 +99,12 @@
     </div>
 </template>
 
-
 <script>
 import PublisherApi from '@/services/PublisherService';
 import { showAlertToast, showAlertRemove, showAlertError } from '@/components/sweetalert';
 
 export default {
     data: () => ({
-      
         publisher: [],
         search: '',
         dialog: false,
@@ -126,17 +115,28 @@ export default {
             { text: 'Cidade', value: 'cidade', align: 'start' },
             { text: 'Ações', value: 'actions', sortable: false, align: 'center' }
         ],
-       
+
         PublisherItem: {
             id: null,
             nome: '',
             cidade: ''
         },
-      
+
         rules: [(value) => !!value || 'Este campo é obrigatório.'],
-      
+
         errors: []
     }),
+    computed: {
+        formTitle() {
+            return !this.PublisherItem.id ? 'Nova Editora' : 'Editar Editora';
+        }
+    },
+
+    watch: {
+        dialog(val) {
+            val || this.close();
+        }
+    },
 
     mounted() {
         this.list();
@@ -144,13 +144,11 @@ export default {
 
     methods: {
         list() {
-          
             PublisherApi.list().then((resposta) => {
                 this.publisher = resposta.data;
             });
         },
 
-       
         save() {
             if (this.$refs.form.validate()) {
                 PublisherApi.save(this.PublisherItem)
@@ -179,7 +177,6 @@ export default {
             }
         },
 
-       
         close() {
             this.dialog = false;
 
@@ -191,7 +188,6 @@ export default {
 
             this.$refs.form.resetValidation();
         },
-
 
         deleteItemConfirm(item) {
             PublisherApi.delete(item)
@@ -235,24 +231,9 @@ export default {
                     });
             }
         }
-    },
-
-    computed: {
-      
-        formTitle() {
-            return !this.PublisherItem.id ? 'Nova Editora' : 'Editar Editora';
-        }
-    },
-
-    watch: {
-
-        dialog(val) {
-            val || this.close();
-        }
     }
 };
 </script>
-
 
 <style>
 @import '../assets/styles/TableViews.css';

@@ -210,6 +210,31 @@ export default {
         error: []
     }),
 
+    computed: {
+        formattedRentals() {
+            return this.rentals.map((rental) => {
+                const statusText = this.getStatusText(rental.data_devolucao, rental.data_previsao);
+
+                return {
+                    ...rental,
+                    data_aluguel: rental.data_aluguel.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3/$2/$1'),
+                    data_previsao: rental.data_previsao.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3/$2/$1'),
+                    data_devolucao: rental.data_devolucao
+                        ? rental.data_devolucao.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3/$2/$1')
+                        : 'Pendente',
+                    statusText: statusText,
+                    statusColor: this.getStatusColor(rental.data_devolucao, rental.data_previsao),
+                    statusIcon: this.getStatusIcon(rental.data_devolucao, rental.data_previsao),
+                    status: statusText
+                };
+            });
+        }
+    },
+    watch: {
+        dialog(val) {
+            val || this.close();
+        }
+    },
     mounted() {
         this.list();
         this.loadBookList();
@@ -404,33 +429,6 @@ export default {
             } else {
                 return 'mdi-timer-sand';
             }
-        }
-    },
-
-    computed: {
-        formattedRentals() {
-            return this.rentals.map((rental) => {
-                const statusText = this.getStatusText(rental.data_devolucao, rental.data_previsao);
-
-                return {
-                    ...rental,
-                    data_aluguel: rental.data_aluguel.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3/$2/$1'),
-                    data_previsao: rental.data_previsao.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3/$2/$1'),
-                    data_devolucao: rental.data_devolucao
-                        ? rental.data_devolucao.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3/$2/$1')
-                        : 'Pendente',
-                    statusText: statusText,
-                    statusColor: this.getStatusColor(rental.data_devolucao, rental.data_previsao),
-                    statusIcon: this.getStatusIcon(rental.data_devolucao, rental.data_previsao),
-                    status: statusText
-                };
-            });
-        }
-    },
-
-    watch: {
-        dialog(val) {
-            val || this.close();
         }
     }
 };

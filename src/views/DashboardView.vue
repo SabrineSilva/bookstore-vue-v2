@@ -348,7 +348,29 @@ export default {
             }
         }
     }),
+    computed: {
+        formattedRentals() {
+            return this.rentals
+                .filter((rental) => {
+                    const statusText = this.getStatusText(rental.data_devolucao, rental.data_previsao);
+                    return statusText === 'Atrasado';
+                })
+                .map((rental) => {
+                    const statusText = this.getStatusText(rental.data_devolucao, rental.data_previsao);
+                    const formattedRental = {
+                        ...rental,
+                        data_aluguel: rental.data_aluguel.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3/$2/$1'),
+                        data_previsao: rental.data_previsao.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3/$2/$1'),
+                        data_devolucao: rental.data_devolucao
+                            ? rental.data_devolucao.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3/$2/$1')
+                            : null,
+                        statusText: statusText
+                    };
 
+                    return formattedRental;
+                });
+        }
+    },
     mounted() {
         this.loadLatestBooks();
         this.loadLatestRentals();
@@ -381,7 +403,7 @@ export default {
                 });
         },
         loadLatestBooks() {
-            BookApi.list() 
+            BookApi.list()
                 .then((response) => {
                     const allBooks = response.data;
                     const sortedBooks = allBooks.sort((a, b) => b.id - a.id);
@@ -393,7 +415,7 @@ export default {
         },
 
         loadLatestRentals() {
-            RentalApi.list() 
+            RentalApi.list()
                 .then((response) => {
                     const allRentals = response.data;
                     const sortedRentals = allRentals.sort((a, b) => b.id - a.id);
@@ -464,31 +486,7 @@ export default {
                 return 'Algo deu errado';
             }
         }
-    },
-    computed: {
-        formattedRentals() {
-            return this.rentals
-                .filter((rental) => {
-                    const statusText = this.getStatusText(rental.data_devolucao, rental.data_previsao);
-                    return statusText === 'Atrasado';
-                })
-                .map((rental) => {
-                    const statusText = this.getStatusText(rental.data_devolucao, rental.data_previsao);
-                    const formattedRental = {
-                        ...rental,
-                        data_aluguel: rental.data_aluguel.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3/$2/$1'),
-                        data_previsao: rental.data_previsao.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3/$2/$1'),
-                        data_devolucao: rental.data_devolucao
-                            ? rental.data_devolucao.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3/$2/$1')
-                            : null,
-                        statusText: statusText
-                    };
-
-                    return formattedRental;
-                });
-        }
-    },
-    watch: {}
+    }
 };
 </script>
 
