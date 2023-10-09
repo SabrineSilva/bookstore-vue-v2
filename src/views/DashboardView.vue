@@ -295,13 +295,10 @@ export default {
     },
     data: () => ({
         rentals: [],
+        rentalsForStatus: [],
         books: [],
         latestBooks: [],
         latestRentals: [],
-        NdevolvidoAtrasado: [],
-        NdevolvidoPrazo: [],
-        devolvidoAtrasado: [],
-        devolvidoPrazo: [],
         totalAtraso: 0,
         totalBooks: 0,
         totalRentals: 0,
@@ -425,6 +422,16 @@ export default {
                     console.error('Error fetching latest books:', error);
                 });
         },
+
+        calculateRentals() {
+            RentalApi.list()
+                .then((response) => {
+                    this.rentalsForStatus = response.data;
+                })
+                .catch((error) => {
+                    console.error('Error fetching rentals:', error);
+                });
+        },
         calculateTotalRentals() {
             RentalApi.list()
                 .then((response) => {
@@ -473,17 +480,18 @@ export default {
         },
 
         getStatusText(dataDevolucao, dataPrevisao) {
-            const today = new Date();
-
+            const today = new Date().toISOString().substr(0, 10);
             const devolution = dataDevolucao ? dataDevolucao : '';
             const forecast = dataPrevisao;
 
-            if (devolution !== null && devolution > forecast) {
+            if (devolution !== '' && devolution > forecast) {
                 return 'Atrasado';
-            } else if (devolution !== null || forecast >= today) {
+            } else if (devolution !== '' && devolution <= forecast) {
                 return 'No prazo';
+            } else if (devolution === '' && today > forecast) {
+                return 'Atrasado';
             } else {
-                return 'Algo deu errado';
+                return 'No prazo';
             }
         }
     }

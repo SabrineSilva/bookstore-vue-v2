@@ -113,8 +113,7 @@
             </template>
             <template v-slot:[`item.data_devolucao`]="{ item }">
                 <div>
-                    <v-chip v-if="item.data_devolucao === 'Pendente'" color="yellow lighten-4">
-                        <v-icon class="icon-status" left>mdi-alert-circle-outline</v-icon>
+                    <v-chip v-if="item.data_devolucao === 'Pendente'" color="yellow lighten-3">
                         <strong>Pendente</strong></v-chip
                     >
                     <span v-else>{{ item.data_devolucao }}</span>
@@ -354,7 +353,7 @@ export default {
 
             RentalApi.update(item)
                 .then(() => {
-                    showAlertToast('success', 'Registro atualizado com sucesso.');
+                    showAlertToast('success', 'Aluguel devolvido com sucesso.');
                     this.list();
                 })
                 .catch((error) => {

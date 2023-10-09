@@ -106,9 +106,12 @@
                     mdi-pencil
                 </v-icon>
 
-                <v-icon color="red lighten-1" class="delete-icon-table" @click="OnClickDelete(item)">
+                <v-icon color="red lighten-1" class="delete-icon-table mr-2" @click="OnClickDelete(item)">
                     mdi-delete
                 </v-icon>
+                <!-- <v-icon color="indigo lighten-1"> 
+                    mdi-information-outline 
+                </v-icon> -->
             </template>
 
             <template v-slot:no-data>
