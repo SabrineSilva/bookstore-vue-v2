@@ -2,20 +2,23 @@ import { http } from './AxiosConfiguration'
 
 export default {
 
-    list: () => {
-        return http.get('editoras')
+    listAll: () => {
+        return http.get('publishers')
     },
 
-    save: (publisher) => {
-        return http.post('editora', publisher)
+    create: (publisher) => {
+        return http.post('publishers', publisher)
     },
 
     update: (publisher) => {
-        return http.put('editora', publisher)
+        return http.put('publishers', publisher)
     },
 
-    delete: (publisher) => {
-        return http.delete('editora', {data: publisher})
-    }
+    delete: (id) => {
+        return http.delete(`publishers/${id}`)
+    },
 
+    findById: (id) => {
+        return http.get(`publishers/${id}`)
+    }
 }

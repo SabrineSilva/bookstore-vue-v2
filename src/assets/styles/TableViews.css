@@ -23,6 +23,7 @@ opacity: 0.5;
 
 }
 
+
 @media (max-width: 817px) {
   .main-container {
     position: static;

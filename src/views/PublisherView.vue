@@ -11,7 +11,7 @@
         >
             <template v-slot:top>
                 <v-toolbar flat>
-                    <v-toolbar-title>Editoras</v-toolbar-title>
+                    <v-toolbar-title>Editoras ({{ publisherCount }})</v-toolbar-title>
                     <v-divider class="mx-4" inset vertical></v-divider>
 
                     <v-dialog persistent v-model="dialog" max-width="500px">
@@ -40,7 +40,7 @@
                                                     color="indigo lighten-1"
                                                     required
                                                     :rules="rules"
-                                                    v-model="PublisherItem.nome"
+                                                    v-model="PublisherItem.name"
                                                     label="Nome"
                                                     append-icon="mdi-home-city"
                                                 ></v-text-field>
@@ -51,7 +51,7 @@
                                                     color="indigo lighten-1"
                                                     required
                                                     :rules="rules"
-                                                    v-model="PublisherItem.cidade"
+                                                    v-model="PublisherItem.city"
                                                     label="Cidade"
                                                     append-icon="mdi-map-marker"
                                                 ></v-text-field>
@@ -85,8 +85,11 @@
                 <v-icon color="light-blue darken-2" class="edit-icon-table mr-2" @click="editItem(item)">
                     mdi-pencil
                 </v-icon>
-                <v-icon color="red lighten-1" class="delete-icon-table" @click="OnClickDelete(item)">
+                <v-icon color="red lighten-1" class="delete-icon-table mr-2" @click="OnClickDelete(item)">
                     mdi-delete
+                </v-icon>
+                <v-icon color="purple lighten-1" class="detail-icon-table" @click="openInfoDialog(item)">
+                    mdi-information-outline
                 </v-icon>
             </template>
             <template v-slot:no-data>
@@ -96,30 +99,76 @@
                 <span>Nada foi encontrado.</span>
             </template>
         </v-data-table>
+        <v-col cols="auto">
+            <v-dialog v-model="showInfoDialog" max-width="500">
+                <template v-slot:default="dialog">
+                    <v-card>
+                        <v-toolbar color="primary" dark>
+                            <v-icon class="mr-2">mdi-city</v-icon>
+                            <span class="text-subtitle-1 font-weight-medium">
+                                Detalhes de {{ specificPublisher.name }}</span
+                            >
+                            <v-spacer></v-spacer>
+                            <v-btn text @click="dialog.value = false">
+                                <v-icon> mdi-close </v-icon>
+                            </v-btn>
+                        </v-toolbar>
+                        <v-simple-table>
+                            <template v-slot:default>
+                                <tbody>
+                                    <tr>
+                                        <th class="text-left">Nome</th>
+                                        <th class="text-left">Última vez atualizada</th>
+                                    </tr>
+
+                                    <tr>
+                                        <td>{{ specificPublisher.name }}</td>
+
+                                        <td>{{ formatDateTime(specificPublisher.updatedAt) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-left">Cidade</th>
+                                        <th class="text-left">Inserção no sistema</th>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ specificPublisher.city }}</td>
+                                        <td>{{ formatDateTime(specificPublisher.createdAt) }}</td>
+                                    </tr>
+                                </tbody>
+                            </template>
+                        </v-simple-table>
+                    </v-card>
+                </template>
+            </v-dialog>
+        </v-col>
     </div>
 </template>
 
 <script>
 import PublisherApi from '@/services/PublisherService';
 import { showAlertToast, showAlertRemove, showAlertError } from '@/components/sweetalert';
+import { format } from 'date-fns';
 
 export default {
     data: () => ({
         publisher: [],
+        specificPublisher: [],
         search: '',
         dialog: false,
         dialogDelete: false,
+        showInfoDialog: false,
+        publisherCount: 0,
         headers: [
             { text: 'ID', align: 'start', sortable: true, value: 'id' },
-            { text: 'Nome', value: 'nome', align: 'start' },
-            { text: 'Cidade', value: 'cidade', align: 'start' },
+            { text: 'Nome', value: 'name', align: 'start' },
+            { text: 'Cidade', value: 'city', align: 'start' },
             { text: 'Ações', value: 'actions', sortable: false, align: 'center' }
         ],
 
         PublisherItem: {
-            id: null,
-            nome: '',
-            cidade: ''
+            id: 0,
+            name: '',
+            city: ''
         },
 
         rules: [(value) => !!value || 'Este campo é obrigatório.'],
@@ -128,7 +177,7 @@ export default {
     }),
     computed: {
         formTitle() {
-            return !this.PublisherItem.id ? 'Nova Editora' : 'Editar Editora';
+            return !this.PublisherItem.id ? 'Nova Editora' : 'Atualizar Editora';
         }
     },
 
@@ -139,33 +188,43 @@ export default {
     },
 
     mounted() {
-        this.list();
+        this.listAll();
+        this.calculateTotalPublishers();
     },
 
     methods: {
-        list() {
-            PublisherApi.list().then((resposta) => {
-                this.publisher = resposta.data;
+        calculateTotalPublishers() {
+            PublisherApi.listAll()
+                .then((response) => {
+                    this.publisherCount = response.data.length;
+                })
+                .catch((error) => {
+                    console.error('Error fetching publishers:', error);
+                });
+        },
+
+        listAll() {
+            PublisherApi.listAll().then((response) => {
+                this.publisher = response.data;
             });
         },
 
-        save() {
+        findById(item) {
+            PublisherApi.findById(item.id).then((response) => {
+                this.specificPublisher = response.data;
+            });
+        },
+
+        create() {
             if (this.$refs.form.validate()) {
-                PublisherApi.save(this.PublisherItem)
+                PublisherApi.create(this.PublisherItem)
                     .then(() => {
                         this.close();
                         showAlertToast('success', 'Registro criado com sucesso.');
-                        this.list();
+                        this.listAll();
                     })
                     .catch((error) => {
-                        if (
-                            error.response &&
-                            error.response.status === 400 &&
-                            error.response.data &&
-                            error.response.data.error
-                        ) {
-                            showAlertError('Ops', error.response.data.error);
-                        }
+                        showAlertError('Ops', error.response.data.message);
                     });
             }
         },
@@ -181,19 +240,19 @@ export default {
             this.dialog = false;
 
             this.PublisherItem = {
-                id: null,
-                nome: '',
-                cidade: ''
+                id: 0,
+                name: '',
+                city: ''
             };
 
             this.$refs.form.resetValidation();
         },
 
         deleteItemConfirm(item) {
-            PublisherApi.delete(item)
+            PublisherApi.delete(item.id)
                 .then(() => {
                     showAlertToast('success', 'Registro deletado com sucesso.');
-                    this.list();
+                    this.listAll();
                 })
                 .catch(() => {
                     showAlertError('Não foi possível apagar.', 'A editora possui associação com algum livro.');
@@ -204,11 +263,11 @@ export default {
             if (this.PublisherItem.id) {
                 return this.edit(this.PublisherItem);
             }
-            this.save(this.PublisherItem);
+            this.create(this.PublisherItem);
         },
 
         OnClickDelete(item) {
-            showAlertRemove(() => this.deleteItemConfirm(item));
+            showAlertRemove(() => this.deleteItemConfirm(item), item.name);
         },
 
         edit() {
@@ -217,24 +276,26 @@ export default {
                     .then(() => {
                         this.close();
                         showAlertToast('success', 'Registro atualizado com sucesso.');
-                        this.list();
+                        this.listAll();
                     })
                     .catch((error) => {
-                        if (
-                            error.response &&
-                            error.response.status === 400 &&
-                            error.response.data &&
-                            error.response.data.error
-                        ) {
-                            showAlertError('Ops', error.response.data.error);
-                        }
+                        showAlertError('Ops', error.response.data.message);
                     });
             }
+        },
+
+        openInfoDialog(item) {
+            this.findById(item);
+            this.showInfoDialog = true;
+        },
+
+        formatDateTime(dateTime) {
+            return format(new Date(dateTime), 'dd/MM/yyyy HH:mm:ss');
         }
     }
 };
 </script>
 
-<style>
+<style scoped>
 @import '../assets/styles/TableViews.css';
 </style>
