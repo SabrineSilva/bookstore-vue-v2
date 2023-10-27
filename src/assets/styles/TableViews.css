@@ -1,14 +1,13 @@
 .main-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: absolute;
     margin-top: 20px;
+    left: 50%;
+    transform: translate(-50%);
+    width: 80%;
 }
 
 .custom-table {
     width: 100%;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .swal2-popup {
@@ -46,8 +45,6 @@
 
     left: 85.3%;
 }
-
-
 
 @media (max-width: 817px) {
     .main-container {
