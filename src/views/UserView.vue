@@ -11,7 +11,7 @@
         >
             <template v-slot:top>
                 <v-toolbar flat>
-                    <v-toolbar-title>Usuários</v-toolbar-title>
+                    <v-toolbar-title>Clientes ({{ userCount }})</v-toolbar-title>
                     <v-divider class="mx-4" inset vertical></v-divider>
 
                     <v-dialog persistent v-model="dialog" max-width="500px">
@@ -22,13 +22,13 @@
                         </template>
                         <v-card class="add-form rounded-xl pa-3">
                             <v-card-title class="justify-space-between" style="margin-bottom: 10px">
-                                <v-btn disabled style="opacity: 0">
-                                    <v-icon> mdi-close </v-icon>
-                                </v-btn>
-                                <span class="text-h5 align-center font-weight-medium">{{ formTitle }}</span>
-                                <v-btn icon @click="close">
-                                    <v-icon> mdi-close </v-icon>
-                                </v-btn>
+                                <div class="dialog-header">
+                                    <span class="text-h5 form-title font-weight-medium">{{ formTitle }}</span>
+
+                                    <v-btn class="close-icon" icon @click="close">
+                                        <v-icon> mdi-close </v-icon>
+                                    </v-btn>
+                                </div>
                             </v-card-title>
 
                             <v-card-text>
@@ -40,7 +40,7 @@
                                                     color="indigo lighten-1"
                                                     required
                                                     :rules="rules"
-                                                    v-model="userItem.nome"
+                                                    v-model="userItem.name"
                                                     label="Nome"
                                                     append-icon="mdi-account"
                                                 ></v-text-field>
@@ -61,7 +61,7 @@
                                                     color="indigo lighten-1"
                                                     required
                                                     :rules="rules"
-                                                    v-model="userItem.cidade"
+                                                    v-model="userItem.city"
                                                     label="Cidade"
                                                     append-icon="mdi-home-city"
                                                 ></v-text-field>
@@ -71,7 +71,7 @@
                                                     color="indigo lighten-1"
                                                     required
                                                     :rules="rules"
-                                                    v-model="userItem.endereco"
+                                                    v-model="userItem.address"
                                                     label="Endereço"
                                                     append-icon="mdi-map-marker"
                                                 ></v-text-field>
@@ -81,7 +81,7 @@
 
                                     <v-card-actions>
                                         <div style="width: 100%" class="text-center">
-                                            <v-btn color="indigo lighten-1" text @click="onClickSave"> Salvar </v-btn>
+                                            <v-btn color="indigo lighten-1" text @click="onClickcreate"> Salvar </v-btn>
                                         </div>
                                     </v-card-actions>
                                 </v-form>
@@ -100,18 +100,51 @@
                     ></v-text-field>
                 </v-toolbar>
             </template>
-
             <template v-slot:[`item.actions`]="{ item }">
-                <v-icon color="light-blue darken-2" class="edit-icon-table mr-2" @click="editItem(item)">
-                    mdi-pencil
-                </v-icon>
-
-                <v-icon color="red lighten-1" class="delete-icon-table mr-2" @click="OnClickDelete(item)">
-                    mdi-delete
-                </v-icon>
-                <!-- <v-icon color="indigo lighten-1"> 
-                    mdi-information-outline 
-                </v-icon> -->
+                <div class="action-column">
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-icon
+                                color="light-blue darken-2"
+                                class="icon-table mr-2"
+                                @click="updateItem(item)"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                mdi-pencil
+                            </v-icon>
+                        </template>
+                        <span>Atualizar</span>
+                    </v-tooltip>
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-icon
+                                color="red lighten-1"
+                                class="icon-table mr-2"
+                                @click="OnClickDelete(item)"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                mdi-delete
+                            </v-icon>
+                        </template>
+                        <span>Excluir</span>
+                    </v-tooltip>
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-icon
+                                color="purple lighten-1"
+                                class="icon-table"
+                                @click="openInfoDialog(item)"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                mdi-information-outline
+                            </v-icon>
+                        </template>
+                        <span>Detalhes</span>
+                    </v-tooltip>
+                </div>
             </template>
 
             <template v-slot:no-data>
@@ -121,35 +154,70 @@
                 <span>Nada foi encontrado.</span>
             </template>
         </v-data-table>
+        <v-col cols="auto">
+            <v-dialog v-model="showInfoDialog" max-width="550">
+                <template v-slot:default="dialog">
+                    <v-card>
+                        <v-toolbar color="primary" dark>
+                            <v-icon class="mr-2">mdi-city</v-icon>
+                            <span class="text-subtitle-1 font-weight-medium"> Detalhes de {{ specificUser.name }}</span>
+                            <v-spacer></v-spacer>
+                            <v-btn text @click="dialog.value = false">
+                                <v-icon> mdi-close </v-icon>
+                            </v-btn>
+                        </v-toolbar>
+                        <v-simple-table>
+                            <template v-slot:default>
+                                <tbody>
+                                    <tr>
+                                        <th class="text-left">Quant. de aluguéis realizados</th>
+                                        <th class="text-left">Inserção no sistema</th>
+                                        <th class="text-left">Última vez atualizado</th>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-h6" align="center">{{ specificUser.numberOfRentals }}</td>
+                                        <td>{{ formatDateTime(specificUser.createdAt) }}</td>
+                                        <td>{{ formatDateTime(specificUser.updatedAt) }}</td>
+                                    </tr>
+                                </tbody>
+                            </template>
+                        </v-simple-table>
+                    </v-card>
+                </template>
+            </v-dialog>
+        </v-col>
     </div>
 </template>
 
 <script>
 import UserApi from '@/services/UserService';
 import { showAlertToast, showAlertRemove, showAlertError } from '@/components/sweetalert';
+import { format, utcToZonedTime } from 'date-fns-tz';
 
 export default {
     data: () => ({
         users: [],
-
+        specificUser: [],
         search: '',
         dialog: false,
         dialogDelete: false,
+        showInfoDialog: false,
+        userCount: 0,
         headers: [
-            { text: 'ID', align: 'start', sortable: true, value: 'id' },
-            { text: 'Nome', value: 'nome', align: 'start' },
+            { text: 'ID', value: 'id', align: 'start', sortable: true },
+            { text: 'Nome', value: 'name', align: 'start' },
             { text: 'E-mail', value: 'email', align: 'start' },
-            { text: 'Cidade', value: 'cidade', align: 'start' },
-            { text: 'Endereço', value: 'endereco', align: 'start' },
+            { text: 'Cidade', value: 'city', align: 'start' },
+            { text: 'Endereço', value: 'address', align: 'start' },
             { text: 'Ações', value: 'actions', sortable: false, align: 'center' }
         ],
 
         userItem: {
             id: null,
-            nome: '',
+            name: '',
             email: '',
-            cidade: '',
-            endereco: ''
+            city: '',
+            address: ''
         },
 
         rules: [
@@ -172,7 +240,7 @@ export default {
 
     computed: {
         formTitle() {
-            return !this.userItem.id ? 'Novo Usuário' : 'Editar Usuário';
+            return !this.userItem.id ? 'Novo Cliente' : 'Atualizar Cliente';
         }
     },
 
@@ -182,38 +250,32 @@ export default {
         }
     },
     mounted() {
-        this.list();
+        this.listAll();
+        this.calculateTotalUsers();
     },
 
     methods: {
-        list() {
-            UserApi.list().then((resposta) => {
+        listAll() {
+            UserApi.listAll().then((resposta) => {
                 this.users = resposta.data;
             });
         },
 
-        save() {
+        create() {
             if (this.$refs.form.validate()) {
-                UserApi.save(this.userItem)
+                UserApi.create(this.userItem)
                     .then(() => {
                         this.close();
                         showAlertToast('success', 'Registro criado com sucesso.');
-                        this.list();
+                        this.listAll();
                     })
                     .catch((error) => {
-                        if (
-                            error.response &&
-                            error.response.status === 400 &&
-                            error.response.data &&
-                            error.response.data.error
-                        ) {
-                            showAlertError('Algo deu errado', error.response.data.error);
-                        }
+                        showAlertError('Ops', error.response.data.message);
                     });
             }
         },
 
-        editItem(item) {
+        updateItem(item) {
             this.userItem = Object.assign({}, item);
             this.dialog = true;
         },
@@ -222,56 +284,78 @@ export default {
             this.dialog = false;
             this.userItem = {
                 id: null,
-                nome: '',
+                name: '',
                 email: '',
-                cidade: '',
-                endereco: ''
+                city: '',
+                address: ''
             };
             this.$refs.form.resetValidation();
         },
 
         deleteItemConfirm(item) {
-            UserApi.delete(item)
+            UserApi.delete(item.id)
                 .then(() => {
                     showAlertToast('success', 'Registro deletado com sucesso.');
-                    this.list();
+                    this.listAll();
                 })
                 .catch(() => {
-                    showAlertError('Não foi possível apagar.', 'O Usuário possui associação com algum livro.');
+                    showAlertError('Não foi possível apagar.', 'O Cliente possui associação com algum livro.');
                 });
         },
 
-        onClickSave() {
+        onClickcreate() {
             if (this.userItem.id) {
-                return this.edit(this.userItem);
+                return this.update(this.userItem);
             }
-            this.save(this.userItem);
+            this.create(this.userItem);
         },
 
         OnClickDelete(item) {
-            showAlertRemove(() => this.deleteItemConfirm(item));
+            showAlertRemove(() => this.deleteItemConfirm(item), item.name);
         },
 
-        edit() {
+        update() {
             if (this.$refs.form.validate()) {
                 UserApi.update(this.userItem)
                     .then(() => {
                         this.close();
                         showAlertToast('success', 'Registro atualizado com sucesso.');
-                        this.list();
+                        this.listAll();
                         this.$refs.form.resetValidation();
                     })
                     .catch((error) => {
-                        if (
-                            error.response &&
-                            error.response.status === 400 &&
-                            error.response.data &&
-                            error.response.data.error
-                        ) {
-                            showAlertError('Algo deu errado', error.response.data.error);
-                        }
+                        showAlertError('Ops', error.response.data.message);
                     });
             }
+        },
+
+        findById(item) {
+            UserApi.findById(item.id).then((response) => {
+                this.specificUser = response.data;
+            });
+        },
+
+        openInfoDialog(item) {
+            this.findById(item);
+            this.showInfoDialog = true;
+        },
+
+        formatDateTime(dateTime) {
+            if (dateTime) {
+                const zonedDateTime = utcToZonedTime(dateTime, 'America/Sao_Paulo');
+                return format(zonedDateTime, 'dd/MM/yyyy HH:mm:ss', { timeZone: 'America/Sao_Paulo' });
+            }
+            return '';
+        },
+
+        calculateTotalUsers() {
+            UserApi.listAll()
+                .then((response) => {
+                    this.userCount = response.data.length;
+                })
+                .catch((error) => {
+                    console.error('Error fetching users:', error);
+                });
         }
     }
 };

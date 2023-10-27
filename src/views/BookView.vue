@@ -11,7 +11,7 @@
         >
             <template v-slot:top>
                 <v-toolbar flat>
-                    <v-toolbar-title>Livros</v-toolbar-title>
+                    <v-toolbar-title>Livros ({{ bookCount }})</v-toolbar-title>
                     <v-divider class="mx-4" inset vertical></v-divider>
 
                     <v-dialog persistent v-model="dialog" max-width="500px">
@@ -22,13 +22,13 @@
                         </template>
                         <v-card class="add-form rounded-xl pa-3">
                             <v-card-title class="justify-space-between" style="margin-bottom: 10px">
-                                <v-btn disabled style="opacity: 0">
-                                    <v-icon> mdi-close </v-icon>
-                                </v-btn>
-                                <span class="text-h5 align-center font-weight-medium">{{ formTitle }}</span>
-                                <v-btn icon @click="close">
-                                    <v-icon> mdi-close </v-icon>
-                                </v-btn>
+                                <div class="dialog-header">
+                                    <span class="text-h5 form-title font-weight-medium">{{ formTitle }}</span>
+
+                                    <v-btn class="close-icon" icon @click="close">
+                                        <v-icon> mdi-close </v-icon>
+                                    </v-btn>
+                                </div>
                             </v-card-title>
                             <v-card-text>
                                 <v-form ref="form" lazy-validation>
@@ -39,7 +39,7 @@
                                                     color="indigo lighten-1"
                                                     required
                                                     :rules="rules"
-                                                    v-model="BookItem.nome"
+                                                    v-model="BookItem.name"
                                                     label="Nome"
                                                     append-icon="mdi-book"
                                                 ></v-text-field>
@@ -50,23 +50,23 @@
                                                     color="indigo lighten-1"
                                                     required
                                                     :rules="rules"
-                                                    v-model="BookItem.autor"
+                                                    v-model="BookItem.author"
                                                     label="Autor"
                                                     append-icon="mdi-book-edit"
                                                 ></v-text-field>
                                             </v-row>
 
                                             <v-row class="mr-2" cols="12" sm="6" md="4">
-                                                <v-select
-                                                    v-model="BookItem.editora.id"
+                                                <v-autocomplete
+                                                    v-model="BookItem.publisherId"
                                                     :items="publishers"
-                                                    item-text="nome"
+                                                    item-text="name"
                                                     item-value="id"
                                                     color="indigo lighten-1"
                                                     :rules="rules"
                                                     label="Selecione a editora"
                                                     required
-                                                ></v-select>
+                                                ></v-autocomplete>
                                             </v-row>
 
                                             <v-row class="mr-2" cols="12" sm="6" md="4">
@@ -75,9 +75,9 @@
                                                     color="indigo lighten-1"
                                                     required
                                                     :rules="rules"
-                                                    v-model="BookItem.lancamento"
+                                                    v-model="BookItem.launchDate"
                                                     label="Ano de lançamento"
-                                                    append-icon="mdi-calendar-range "
+                                                    append-icon="mdi-calendar-range"
                                                 ></v-text-field>
                                             </v-row>
 
@@ -87,7 +87,7 @@
                                                     color="indigo lighten-1"
                                                     required
                                                     :rules="rules"
-                                                    v-model="BookItem.quantidade"
+                                                    v-model="BookItem.totalQuantity"
                                                     label="Quantidade"
                                                     append-icon="mdi-numeric"
                                                 ></v-text-field>
@@ -118,12 +118,50 @@
             </template>
 
             <template v-slot:[`item.actions`]="{ item }">
-                <v-icon color="light-blue darken-2" class="edit-icon-table mr-2" @click="editItem(item)">
-                    mdi-pencil
-                </v-icon>
-                <v-icon color="red lighten-1" class="delete-icon-table" @click="OnClickDelete(item)">
-                    mdi-delete
-                </v-icon>
+                <div class="action-column">
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-icon
+                                color="light-blue darken-2"
+                                class="icon-table mr-2"
+                                @click="updateItem(item)"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                mdi-pencil
+                            </v-icon>
+                        </template>
+                        <span>Atualizar</span>
+                    </v-tooltip>
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-icon
+                                color="red lighten-1"
+                                class="icon-table mr-2"
+                                @click="OnClickDelete(item)"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                mdi-delete
+                            </v-icon>
+                        </template>
+                        <span>Excluir</span>
+                    </v-tooltip>
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-icon
+                                color="purple lighten-1"
+                                class="icon-table"
+                                @click="openInfoDialog(item)"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                mdi-information-outline
+                            </v-icon>
+                        </template>
+                        <span>Detalhes</span>
+                    </v-tooltip>
+                </div>
             </template>
             <template v-slot:no-data>
                 <span>Nada foi encontrado.</span>
@@ -132,6 +170,44 @@
                 <span>Nada foi encontrado.</span>
             </template>
         </v-data-table>
+        <v-col cols="auto">
+            <v-dialog v-model="showInfoDialog" max-width="500">
+                <template v-slot:default="dialog">
+                    <v-card>
+                        <v-toolbar color="primary" dark>
+                            <v-icon class="mr-2">mdi-city</v-icon>
+                            <span class="text-subtitle-1 font-weight-medium"> Detalhes de {{ specificBook.name }}</span>
+                            <v-spacer></v-spacer>
+                            <v-btn text @click="dialog.value = false">
+                                <v-icon> mdi-close </v-icon>
+                            </v-btn>
+                        </v-toolbar>
+                        <v-simple-table>
+                            <template v-slot:default>
+                                <tbody>
+                                    <tr>
+                                        <th class="text-left">Quant. Disponível</th>
+                                        <th class="text-left">Quant. de vezes alugado</th>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-h6">{{ specificBook.availableQuantity }}</td>
+                                        <td class="text-h6">{{ specificBook.totalTimesRented }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-left">Inserção no sistema</th>
+                                        <th class="text-left">Última vez atualizado</th>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ formatDateTime(specificBook.createdAt) }}</td>
+                                        <td>{{ formatDateTime(specificBook.updatedAt) }}</td>
+                                    </tr>
+                                </tbody>
+                            </template>
+                        </v-simple-table>
+                    </v-card>
+                </template>
+            </v-dialog>
+        </v-col>
     </div>
 </template>
 
@@ -139,52 +215,37 @@
 import BookApi from '@/services/BookService';
 import PublisherApi from '@/services/PublisherService';
 import { showAlertToast, showAlertRemove, showAlertError } from '@/components/sweetalert';
+import { format, utcToZonedTime } from 'date-fns-tz';
 
 export default {
     data: () => ({
         books: [],
         publishers: [],
-
+        showInfoDialog: false,
         search: '',
         dialog: false,
         dialogDelete: false,
+        bookCount: 0,
+        specificBook: [],
         headers: [
-            { text: 'ID', align: 'start', sortable: true, value: 'id' },
-            { text: 'Nome', value: 'nome', align: 'start' },
-            { text: 'Autor', value: 'autor', align: 'start' },
-            { text: 'Editora', value: 'editora.nome', align: 'start' },
-            { text: 'Lançamento', value: 'lancamento', align: 'start' },
-            { text: 'Quantidade', value: 'quantidade', align: 'start' },
-            { text: 'Total alugado', value: 'totalalugado', align: 'start' },
+            { text: 'ID', value: 'id', align: 'start', sortable: true },
+            { text: 'Nome', value: 'name', align: 'start' },
+            { text: 'Autor', value: 'author', align: 'start' },
+            { text: 'Editora', value: 'publisherName', align: 'start' },
+            { text: 'Lançamento', value: 'launchDate', align: 'start' },
+            { text: 'Quantidade', value: 'totalQuantity', align: 'start' },
             { text: 'Ações', value: 'actions', sortable: false, align: 'center' }
         ],
 
         BookItem: {
             id: null,
-            nome: '',
-            editora: {
-                id: null,
-                cidade: '',
-                nome: ''
-            },
-            autor: '',
-            lancamento: '',
-            quantidade: '',
-            totalalugado: 0
-        },
-
-        defaultItem: {
-            id: null,
-            nome: '',
-            editora: {
-                id: null,
-                cidade: '',
-                nome: ''
-            },
-            autor: '',
-            lancamento: '',
-            quantidade: '',
-            totalalugado: 0
+            name: '',
+            publisherName: '',
+            author: '',
+            launchDate: '',
+            totalQuantity: 0,
+            availableQuantity: 0,
+            totalTimesRented: 0
         },
 
         rules: [(value) => !!value || 'Este campo é obrigatório.'],
@@ -193,7 +254,7 @@ export default {
     }),
     computed: {
         formTitle() {
-            return !this.BookItem.id ? 'Novo Livro' : 'Editar Livro';
+            return !this.BookItem.id ? 'Novo Livro' : 'Atualizar Livro';
         }
     },
 
@@ -204,57 +265,56 @@ export default {
     },
 
     mounted() {
-        this.list();
+        this.listAll();
         this.loadPublisherList();
+        this.calculateTotalBooks();
     },
 
     methods: {
-        list() {
-            BookApi.list().then((resposta) => {
+        listAll() {
+            BookApi.listAll().then((resposta) => {
                 this.books = resposta.data;
             });
         },
 
         loadPublisherList() {
-            PublisherApi.list().then((resposta) => {
+            PublisherApi.listAll().then((resposta) => {
                 this.publishers = resposta.data;
             });
         },
 
-        save() {
+        create() {
             if (this.$refs.form.validate()) {
-                BookApi.save(this.BookItem)
+                BookApi.create(this.BookItem)
                     .then(() => {
                         this.close();
                         showAlertToast('success', 'Registro criado com sucesso.');
-                        this.list();
+                        this.listAll();
                     })
                     .catch((error) => {
-                        if (
-                            error.response &&
-                            error.response.status === 400 &&
-                            error.response.data &&
-                            error.response.data.error
-                        ) {
-                            if (error.response.data.error === 'lançamento não foi informado corretamente.') {
-                                showAlertError('O ano é inválido.', 'Informe corretamente o campo lançamento.');
-                            } else if (
-                                error.response.data.error === 'Este livro já existe,tente novamente com outro nome!'
-                            ) {
-                                showAlertError(
-                                    'Este livro já está cadastrado.',
-                                    'Por favor, escolha outro nome e tente novamente.'
-                                );
-                            } else {
-                                showAlertError(error.response.data.error);
-                            }
-                        }
+                        showAlertError('Ops', error.response.data.message);
                     });
             }
         },
 
-        editItem(item) {
-            this.BookItem = Object.assign({}, item);
+        updateItem(item) {
+            this.BookItem = {
+                id: item.id,
+                name: item.name,
+                publisherId: null,
+                author: item.author,
+                launchDate: item.launchDate,
+                totalQuantity: item.totalQuantity,
+                availableQuantity: item.availableQuantity,
+                totalTimesRented: item.totalTimesRented
+            };
+
+            const selectedPublisher = this.publishers.find((publisher) => publisher.name === item.publisherName);
+
+            if (selectedPublisher) {
+                this.BookItem.publisherId = selectedPublisher.id;
+            }
+
             this.dialog = true;
         },
 
@@ -262,77 +322,85 @@ export default {
             this.dialog = false;
             (this.BookItem = {
                 id: null,
-                nome: '',
-                editora: {
-                    id: null,
-                    cidade: '',
-                    nome: ''
-                },
-                autor: '',
-                lancamento: '',
-                quantidade: '',
-                totalalugado: 0
+                name: '',
+                publisherid: null,
+                author: '',
+                launchDate: '',
+                totalQuantity: 0,
+                availableQuantity: 0,
+                totalTimesRented: 0
             }),
                 this.$refs.form.resetValidation();
         },
 
         deleteItemConfirm(item) {
-            BookApi.delete(item)
+            BookApi.delete(item.id)
                 .then(() => {
                     showAlertToast('success', 'Registro deletado com sucesso.');
-                    this.list();
+                    this.listAll();
                 })
-                .catch(() => {
-                    showAlertError('Não foi possível apagar.', 'O livro possui aluguéis ativos.');
+                .catch((error) => {
+                    showAlertError('Ops', error.response.data.message);
                 });
         },
 
         onClickSave() {
             if (this.BookItem.id) {
-                return this.edit(this.BookItem);
+                return this.update(this.BookItem);
             }
-            this.save(this.BookItem);
+            this.create(this.BookItem);
         },
 
         OnClickDelete(item) {
-            showAlertRemove(() => this.deleteItemConfirm(item));
+            showAlertRemove(() => this.deleteItemConfirm(item), item.name);
         },
 
-        edit() {
+        update() {
             if (this.$refs.form.validate()) {
                 BookApi.update(this.BookItem)
                     .then(() => {
                         this.close();
                         showAlertToast('success', 'Registro atualizado com sucesso.');
-                        this.list();
+                        this.listAll();
                     })
                     .catch((error) => {
-                        if (
-                            error.response &&
-                            error.response.status === 400 &&
-                            error.response.data &&
-                            error.response.data.error
-                        ) {
-                            if (error.response.data.error === 'lançamento não foi informado corretamente.') {
-                                showAlertError('O ano é inválido.', 'Informe corretamente o campo lançamento.');
-                            } else if (
-                                error.response.data.error === 'Este livro já existe,tente novamente com outro nome!'
-                            ) {
-                                showAlertError(
-                                    'Este livro já está cadastrado.',
-                                    'Por favor, escolha outro nome e tente novamente.'
-                                );
-                            } else {
-                                showAlertError(error.response.data.error);
-                            }
-                        }
+                        showAlertError('Ops', error.response.data.message);
                     });
             }
+        },
+
+        formatDateTime(dateTime) {
+            if (dateTime) {
+                const zonedDateTime = utcToZonedTime(dateTime, 'America/Sao_Paulo');
+                return format(zonedDateTime, 'dd/MM/yyyy HH:mm:ss', { timeZone: 'America/Sao_Paulo' });
+            }
+            return '';
+        },
+
+        calculateTotalBooks() {
+            BookApi.listAll()
+                .then((response) => {
+                    this.bookCount = response.data.length;
+                })
+                .catch((error) => {
+                    console.error('Error fetching books:', error);
+                });
+        },
+
+        findById(item) {
+            BookApi.findById(item.id).then((response) => {
+                this.specificBook = response.data;
+            });
+        },
+
+        openInfoDialog(item) {
+            this.findById(item);
+            this.showInfoDialog = true;
         }
     }
 };
 </script>
 
-<style>
+<style scoped>
 @import '../assets/styles/TableViews.css';
 </style>

@@ -1,7 +1,3 @@
-
-.container-dashboard {
-    margin-top: 20px;
-}
 .text-title {
     font-size: 30px;
 }
@@ -14,31 +10,31 @@ span.text-toolbar-title {
 }
 
 .image {
-
     background-image: url('../Img/image.jpg');
     background-size: cover;
     background-position: center;
 }
 
 .image2 {
-
     background-image: url('../Img/image_2.jpg');
     background-size: cover;
     background-position: center;
 }
 
 .image3 {
-
     background-image: url('../Img/image_3.jpg');
     background-size: cover;
     background-position: center;
 }
 
 .image4 {
-
     background-image: url('../Img/image_4.jpg');
     background-size: cover;
     background-position: center;
+}
+
+.container-dashboard {
+    margin-top: 20px;
 }
 
 .custom-container {
@@ -46,35 +42,70 @@ span.text-toolbar-title {
     overflow: auto;
 }
 
-.chart {
-
-    width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+.first-value {
+    font-size: 23px;
 }
 
-.toolbar-chart {
+.second-value {
+    font-size: 15px;
+}
+
+.rent-target-row {
+    margin: 0;
     display: flex;
     justify-content: center;
+}
+
+.rent-target-title {
+    margin-left: auto;
+    font-weight: 500;
+}
+
+.rent-target-icon {
+    margin-left: auto;
+}
+
+.rent-target-icon:hover {
+    opacity: 0.5;
+    transition: all ease 0.5s;
 }
 
 @media (max-width: 1904px) {
     .chart {
         width: 500px;
-    
     }
 }
 
 @media (max-width: 1331px) {
     .chart {
         width: 400px;
-    
+    }
+}
+
+@media (max-width: 1161px) {
+    .doughnutChart {
+        margin-left: auto;
+        margin-right: auto;
+        width: 300px;
+    }
+}
+
+@media (max-width: 673px) {
+    .doughnutChart {
+        width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 539px) {
+    .doughnutChart {
+        width: auto;
     }
 }
 
 @media (max-width: 457px) {
     .chart {
         width: 300px;
-    
     }
 }

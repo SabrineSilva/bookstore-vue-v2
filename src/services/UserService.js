@@ -2,20 +2,23 @@ import { http } from './AxiosConfiguration'
 
 export default {
 
-    list: () => {
-        return http.get('usuarios')
+    listAll: () => {
+        return http.get('users')
     },
 
-    save: (users) => {
-        return http.post('usuario', users)
+    create: (user) => {
+        return http.post('users', user)
     },
 
-    update: (users) => {
-        return http.put('usuario', users)
+    update: (user) => {
+        return http.put('users', user)
     },
 
-    delete: (users) => {
-        return http.delete('usuario', {data: users})
+    delete: (id) => {
+        return http.delete(`users/${id}`)
+    },
+
+    findById: (id) => {
+        return http.get(`users/${id}`)
     }
-
 }

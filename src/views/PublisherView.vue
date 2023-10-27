@@ -22,13 +22,13 @@
                         </template>
                         <v-card class="add-form rounded-xl pa-3">
                             <v-card-title class="justify-space-between" style="margin-bottom: 10px">
-                                <v-btn disabled style="opacity: 0">
-                                    <v-icon> mdi-close </v-icon>
-                                </v-btn>
-                                <span class="text-h5 align-center font-weight-medium">{{ formTitle }}</span>
-                                <v-btn icon @click="close">
-                                    <v-icon> mdi-close </v-icon>
-                                </v-btn>
+                                <div class="dialog-header">
+                                    <span class="text-h5 form-title font-weight-medium">{{ formTitle }}</span>
+
+                                    <v-btn class="close-icon" icon @click="close">
+                                        <v-icon> mdi-close </v-icon>
+                                    </v-btn>
+                                </div>
                             </v-card-title>
 
                             <v-card-text>
@@ -82,15 +82,50 @@
             </template>
 
             <template v-slot:[`item.actions`]="{ item }">
-                <v-icon color="light-blue darken-2" class="edit-icon-table mr-2" @click="editItem(item)">
-                    mdi-pencil
-                </v-icon>
-                <v-icon color="red lighten-1" class="delete-icon-table mr-2" @click="OnClickDelete(item)">
-                    mdi-delete
-                </v-icon>
-                <v-icon color="purple lighten-1" class="detail-icon-table" @click="openInfoDialog(item)">
-                    mdi-information-outline
-                </v-icon>
+                <div class="action-column">
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-icon
+                                color="light-blue darken-2"
+                                class="icon-table mr-2"
+                                @click="updateItem(item)"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                mdi-pencil
+                            </v-icon>
+                        </template>
+                        <span>Atualizar</span>
+                    </v-tooltip>
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-icon
+                                color="red lighten-1"
+                                class="icon-table mr-2"
+                                @click="OnClickDelete(item)"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                mdi-delete
+                            </v-icon>
+                        </template>
+                        <span>Excluir</span>
+                    </v-tooltip>
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-icon
+                                color="purple lighten-1"
+                                class="icon-table"
+                                @click="openInfoDialog(item)"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                mdi-information-outline
+                            </v-icon>
+                        </template>
+                        <span>Detalhes</span>
+                    </v-tooltip>
+                </div>
             </template>
             <template v-slot:no-data>
                 <span>Nada foi encontrado.</span>
@@ -117,22 +152,13 @@
                             <template v-slot:default>
                                 <tbody>
                                     <tr>
-                                        <th class="text-left">Nome</th>
+                                        <th class="text-left">Inserção no sistema</th>
                                         <th class="text-left">Última vez atualizada</th>
                                     </tr>
 
                                     <tr>
-                                        <td>{{ specificPublisher.name }}</td>
-
-                                        <td>{{ formatDateTime(specificPublisher.updatedAt) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-left">Cidade</th>
-                                        <th class="text-left">Inserção no sistema</th>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ specificPublisher.city }}</td>
                                         <td>{{ formatDateTime(specificPublisher.createdAt) }}</td>
+                                        <td>{{ formatDateTime(specificPublisher.updatedAt) }}</td>
                                     </tr>
                                 </tbody>
                             </template>
@@ -147,7 +173,7 @@
 <script>
 import PublisherApi from '@/services/PublisherService';
 import { showAlertToast, showAlertRemove, showAlertError } from '@/components/sweetalert';
-import { format } from 'date-fns';
+import { format, utcToZonedTime } from 'date-fns-tz';
 
 export default {
     data: () => ({
@@ -166,7 +192,7 @@ export default {
         ],
 
         PublisherItem: {
-            id: 0,
+            id: null,
             name: '',
             city: ''
         },
@@ -206,6 +232,7 @@ export default {
         listAll() {
             PublisherApi.listAll().then((response) => {
                 this.publisher = response.data;
+              
             });
         },
 
@@ -229,18 +256,16 @@ export default {
             }
         },
 
-        editItem(item) {
-            if (item.id) {
-                this.PublisherItem = Object.assign({}, item);
-                this.dialog = true;
-            }
+        updateItem(item) {
+            this.PublisherItem = Object.assign({}, item);
+            this.dialog = true;
         },
 
         close() {
             this.dialog = false;
 
             this.PublisherItem = {
-                id: 0,
+                id: null,
                 name: '',
                 city: ''
             };
@@ -290,7 +315,11 @@ export default {
         },
 
         formatDateTime(dateTime) {
-            return format(new Date(dateTime), 'dd/MM/yyyy HH:mm:ss');
+            if (dateTime) {
+                const zonedDateTime = utcToZonedTime(dateTime, 'America/Sao_Paulo');
+                return format(zonedDateTime, 'dd/MM/yyyy HH:mm:ss', { timeZone: 'America/Sao_Paulo' });
+            }
+            return '';
         }
     }
 };

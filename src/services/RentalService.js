@@ -1,21 +1,35 @@
-import { http } from './AxiosConfiguration'
+import { http } from './AxiosConfiguration';
 
 export default {
-
-    list: () => {
-        return http.get('alugueis')
+    listAll: () => {
+        return http.get('rentals');
     },
 
-    save: (rentals) => {
-        return http.post('aluguel', rentals)
+    listPending: () => {
+        return http.get('rentals/pending')
     },
 
-    update: (rentals) => {
-        return http.put('aluguel', rentals)
+    listReturned: () => {
+        return http.get('rentals/returned')
     },
 
-    delete: (rentals) => {
-        return http.delete('aluguel', {data: rentals})
+    create: (rental) => {
+        return http.post('rentals', rental);
+    },
+
+    increaseDeadline: (rental) => {
+        return http.put('rentals', rental);
+    },
+
+    delete: (id) => {
+        return http.delete(`rentals/${id}`);
+    },
+
+    findById: (id) => {
+        return http.get(`rentals/${id}`);
+    },
+
+    returnBook: (id) => {
+        return http.put(`rentals/${id}`);
     }
-
-}
+};
