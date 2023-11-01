@@ -8,6 +8,7 @@
                 style="color: rgb(255, 255, 255)"
             ></v-app-bar-nav-icon>
         </v-app-bar>
+
         <v-navigation-drawer class="sidebar" v-model="drawer" :mini-variant.sync="mini" app>
             <v-list>
                 <v-list-item>

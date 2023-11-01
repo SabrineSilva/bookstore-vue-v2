@@ -43,7 +43,7 @@
                                                     label="Livro"
                                                     placeholder="Selecionar..."
                                                     required
-                                                    :rules="rules.required"
+                                                    :rules="rules"
                                                     :disabled="isEditing"
                                                     no-data-text="Nenhum resultado encontrado"
                                                 >
@@ -52,6 +52,9 @@
                                                             <v-list-item-title v-html="item.name"> </v-list-item-title>
                                                             <v-list-item-subtitle
                                                                 v-html="item.author"
+                                                            ></v-list-item-subtitle>
+                                                            <v-list-item-subtitle
+                                                                v-html="item.publisherName"
                                                             ></v-list-item-subtitle>
                                                         </v-list-item-content>
                                                     </template>
@@ -64,10 +67,10 @@
                                                     item-value="id"
                                                     v-model="rentalItem.userId"
                                                     :items="users"
-                                                    label="Usuário"
+                                                    label="Cliente"
                                                     placeholder="Selecionar..."
                                                     required
-                                                    :rules="rules.required"
+                                                    :rules="rules"
                                                     :disabled="isEditing"
                                                     no-data-text="Nenhum resultado encontrado"
                                                 >
@@ -87,7 +90,7 @@
                                                     type="date"
                                                     color="indigo lighten-1"
                                                     required
-                                                    :rules="rules.required"
+                                                    :rules="rules"
                                                     v-model="rentalItem.deadline"
                                                     label="Previsão de Devolução"
                                                     :min="isEditingDate"
@@ -172,8 +175,9 @@
                                 @click="openInfoDialog(item)"
                                 v-bind="attrs"
                                 v-on="on"
+                                large
                             >
-                                mdi-information-outline
+                                mdi-information-symbol
                             </v-icon>
                         </template>
                         <span>Detalhes</span>
@@ -255,10 +259,10 @@ export default {
         headers: [
             { text: 'ID', value: 'id', sortable: true, align: 'start' },
             { text: 'Livro', value: 'bookName', align: 'start' },
-            { text: 'Usuário', value: 'userName', align: 'start' },
+            { text: 'Cliente', value: 'userName', align: 'start' },
             { text: 'Data do Aluguel', value: 'rentalDate', align: 'start' },
             { text: 'Previsão de Devolução', value: 'deadline', align: 'start' },
-            { text: 'Data da Devolução', value: 'returnDate', align: 'center' },
+            { text: 'Data da Devolução', value: 'returnDate', align: 'start' },
             { text: 'Status', value: 'status', align: 'center' },
             { text: 'Ações', value: 'actions', sortable: false, align: 'center' }
         ],
@@ -511,9 +515,7 @@ export default {
         calculateAvailableBooks() {
             const availableBooks = this.books.filter((book) => book.availableQuantity > 0);
             return availableBooks;
-        },
-
-        
+        }
     }
 };
 </script>

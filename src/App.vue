@@ -1,28 +1,37 @@
 <template>
-  <v-app>
-    <v-main class="main">
-      <v-container>
+    <v-app>
         <Menu></Menu>
-        <router-view></router-view>
-      </v-container>
-    </v-main>
-
-  </v-app>
+        <div class="main-content">
+            <router-view class="custom-content"></router-view>
+        </div>
+    </v-app>
 </template>
 
 <script>
 import Menu from '@/components/ComponentMenu';
 
 export default {
-  components: {
-    Menu
-  },
+    components: {
+        Menu
+    }
 };
 </script>
 
 <style>
-.main {
-  background-color: rgb(245, 245, 245);
+.main-content {
+    padding: 30px;
+    padding-left: 90px;
+    background-color: rgb(245, 245, 245);
+    width: 100%;
+    height: 100%;
+}
+.custom-content {
+    margin-top: 30px;
 }
 
+@media (max-width: 1263px) {
+    .main-content {
+        padding-left: 30px;
+    }
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div style="margin-top: 0px" class="container-dashboard ml-3 mr-3">
+    <div class="container-dashboard ml-3 mr-3">
         <v-card-title class="text-h6 text-md-h5 text-lg-h4" style="padding-bottom: 0px; padding-left: 0px"
             ><strong>Dashboard</strong></v-card-title
         >
@@ -167,121 +167,102 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-col>
-                <v-col>
-                    <div class="mb-1">
-                        <v-icon color="green" class="mr-3 mb-1">mdi-podium</v-icon>
-                        <span class="text-toolbar-title text-h6 text-md-h6">Melhores Leitores</span>
+            <v-col class="best-readers">
+                <div class="mb-1">
+                    <v-icon color="green" class="mr-3 mb-1">mdi-podium</v-icon>
+                    <span class="text-toolbar-title text-h6 text-md-h6">Melhores Leitores</span>
 
-                        <v-btn color="#6994c7" text class="ml-5" to="/User">Ver todos</v-btn>
-                    </div>
-                    <v-card class="rounded-lg">
-                        <v-simple-table>
-                            <template v-slot:default>
-                                <thead>
-                                    <tr>
-                                        <th class="text-left">Cliente</th>
-                                        <th class="text-left">E-mail</th>
-                                        <th class="text-left">Quantidade de aluguéis</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="user in bestCustomers" :key="user.id">
-                                        <td>
-                                            <v-list-item-title>{{ user.name }}</v-list-item-title>
-                                        </td>
-                                        <td class="subtitle-text">{{ user.email }}</td>
-                                        <td>
-                                            <strong>{{ user.numberOfRentals }}</strong>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </template>
-                        </v-simple-table>
-                    </v-card>
-                    <div class="mt-4">
-                        <v-icon color="indigo" class="mr-2">mdi-book-heart</v-icon>
-                        <span class="text-h6 text-md-h6">Os 5 livros mais alugados</span>
-                        <v-btn color="#6994c7" text class="ml-5" to="/Book">Ver todos</v-btn>
-                    </div>
-                    <v-card class="rounded-lg">
-                        <v-simple-table>
-                            <template v-slot:default>
-                                <thead>
-                                    <tr>
-                                        <th class="text-left">Livro</th>
-                                        <th class="text-left">Autor</th>
-                                        <th class="text-left">Editora</th>
-                                        <th class="text-left">Total de vezes alugado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="book in books" :key="book.id">
-                                        <td>{{ book.name }}</td>
-                                        <td>{{ book.author }}</td>
-                                        <td>{{ book.publisherName }}</td>
-                                        <td>
-                                            <strong>{{ book.totalTimesRented }}</strong>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </template>
-                        </v-simple-table>
-                    </v-card>
-                </v-col>
-            </v-col>
-            <v-col>
-                <template>
-                    <Doughnut
-                        :chart-options="chartOptions"
-                        :chart-data="chartData"
-                        :chart-id="chartId"
-                        :dataset-id-key="datasetIdKey"
-                        :plugins="plugins"
-                        :css-classes="cssClasses"
-                        :styles="styles"
-                        :width="width"
-                        :height="height"
-                        class="doughnutChart"
-                    />
-                </template>
-                <!-- <v-card rounded-xl class="mt-10 pa-4" elevation="1">
-                    <v-col>
-                        <v-row class="rent-target-row">
-                            <span class="rent-target-title"> META DE ALUGUÉIS</span>
-                            <v-icon v-if="!editingRentTarget" class="rent-target-icon" @click="startEditingRentTarget"
-                                >mdi-pencil-outline</v-icon
-                            >
-                            <v-icon v-else class="rent-target-icon" @click="saveRentTarget"> mdi-check </v-icon>
-                        </v-row>
-                        <v-row class="rent-target-row">
-                            <template v-if="!editingRentTarget">
-                                <strong>
-                                    <span class="first-value">{{ totalRentals }}</span>
-                                </strong>
-                                <span class="mt-2 second-value">/{{ newRentTarget }}</span>
-                            </template>
-                            <template v-else>
-                                <v-text-field
-                                    v-model="newRentTarget"
-                                    label="Nova Meta"
-                                    type="number"
-                                    @input="calculateTargetRentPercent"
-                                ></v-text-field>
-                            </template>
-                        </v-row>
-                    </v-col>
-                    <v-progress-linear v-model="targetRentPercent" color="blue-grey" height="25">
-                        <template v-slot:default="{ value }">
-                            <strong>{{ Math.ceil(value) }}%</strong>
+                    <v-btn color="#6994c7" text class="ml-5" to="/User">Ver todos</v-btn>
+                </div>
+                <v-card class="rounded-lg table-dashboard">
+                    <v-simple-table>
+                        <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <th class="text-left">Cliente</th>
+                                    <th class="text-left">E-mail</th>
+                                    <th class="text-left">Quantidade de aluguéis</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="user in bestCustomers" :key="user.id">
+                                    <td>
+                                        <v-list-item-title>{{ user.name }}</v-list-item-title>
+                                    </td>
+                                    <td class="subtitle-text">{{ user.email }}</td>
+                                    <td>
+                                        <strong>{{ user.numberOfRentals }}</strong>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </template>
-                    </v-progress-linear>
-                </v-card> -->
-                <template>
-                    <LineChart style="display: none" />
-                </template>
+                    </v-simple-table>
+                </v-card>
+                <v-data-table
+                    :headers="headers"
+                    :items="bestCustomers"
+                    :items-per-page="6"
+                    class="elevation-1 responsive-table"
+                    :footer-props="{ itemsPerPageText: 'Registros por página:', itemsPerPageAllText: 'Exibir tudo' }"
+                    :header-props="{ sortByText: 'Ordenar por' }"
+                ></v-data-table>
+            </v-col>
+            <v-col class="most-rented">
+                <div>
+                    <v-icon color="indigo" class="mr-2">mdi-book-heart</v-icon>
+                    <span class="text-h6 text-md-h6">Livros populares</span>
+                    <v-btn color="#6994c7" text class="ml-5" to="/Book">Ver todos</v-btn>
+                </div>
+                <v-card class="rounded-lg table-dashboard">
+                    <v-simple-table>
+                        <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <th class="text-left">Livro</th>
+                                    <th class="text-left">Autor</th>
+                                    <th class="text-left">Editora</th>
+                                    <th class="text-left">Total de vezes alugado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="book in books" :key="book.id">
+                                    <td>{{ book.name }}</td>
+                                    <td>{{ book.author }}</td>
+                                    <td>{{ book.publisherName }}</td>
+                                    <td>
+                                        <strong>{{ book.totalTimesRented }}</strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </template>
+                    </v-simple-table>
+                </v-card>
+                <v-data-table
+                    :headers="headersBooks"
+                    :items="books"
+                    :items-per-page="6"
+                    class="elevation-1 responsive-table"
+                    :footer-props="{ itemsPerPageText: 'Registros por página:', itemsPerPageAllText: 'Exibir tudo' }"
+                    :header-props="{ sortByText: 'Ordenar por' }"
+                ></v-data-table>
             </v-col>
         </v-row>
+        <v-col>
+            <template>
+                <Doughnut
+                    :chart-options="chartOptions"
+                    :chart-data="chartData"
+                    :chart-id="chartId"
+                    :dataset-id-key="datasetIdKey"
+                    :plugins="plugins"
+                    :css-classes="cssClasses"
+                    :styles="styles"
+                    :width="width"
+                    :height="height"
+                    class="doughnutChart"
+                />
+            </template>
+        </v-col>
     </div>
 </template>
 
@@ -291,7 +272,7 @@ import RentalApi from '@/services/RentalService';
 import UserApi from '@/services/UserService';
 import PublisherApi from '@/services/PublisherService';
 import { Doughnut } from 'vue-chartjs/legacy';
-import LineChart from '@/components/LineChart.vue';
+
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale } from 'chart.js';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
@@ -299,8 +280,7 @@ ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 export default {
     name: 'DoughnutChart',
     components: {
-        Doughnut,
-        LineChart
+        Doughnut
     },
     props: {
         chartId: {
@@ -348,16 +328,6 @@ export default {
         editingRentTarget: false,
         newRentTarget: parseFloat(localStorage.getItem('rentTarget')) || 100,
         calculatedTargetRentPercent: 0,
-        // rentalsPerDay: this.calculateRentalsPerDay(),
-        headers: [
-            { text: 'ID', align: 'start', sortable: true, value: 'id' },
-            { text: 'Livro', value: 'livro_id.nome', align: 'start' },
-            { text: 'Usuário', value: 'usuario_id.nome', align: 'start' },
-            { text: 'Data do Aluguel', value: 'data_aluguel', align: 'start' },
-            { text: 'Previsão de Devolução', value: 'data_previsao', align: 'start' },
-            { text: 'Data da Devolução', value: 'data_devolucao', align: 'center' },
-            { text: 'Status', value: 'status', align: 'center' }
-        ],
 
         chartData: {
             labels: [
@@ -377,8 +347,24 @@ export default {
         },
         chartOptions: {
             responsive: true,
-            maintainAspectRatio: false
-        }
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'left'
+                }
+            }
+        },
+        headers: [
+            { text: 'Cliente', value: 'name' },
+            { text: 'E-mail', value: 'email' },
+            { text: 'Quantidade de aluguéis', value: 'numberOfRentals' }
+        ],
+        headersBooks: [
+            { text: 'Livro', value: 'name' },
+            { text: 'Autor', value: 'author' },
+            { text: 'Editora', value: 'publisherName' },
+            { text: 'Total de vezes alugado', value: 'totalTimesRented' }
+        ]
     }),
     computed: {
         targetRentPercent() {
@@ -503,7 +489,7 @@ export default {
             }
         },
         startInterval() {
-            this.intervalId = setInterval(this.calculateTargetRentPercent, 1000); // Recalcula a cada 1000 ms (1 segundo)
+            this.intervalId = setInterval(this.calculateTargetRentPercent, 1000);
         },
 
         stopInterval() {
@@ -521,7 +507,7 @@ export default {
         },
 
         saveRentTarget() {
-            localStorage.setItem('rentTarget', this.newRentTarget); // Armazena o novo valor no localStorage
+            localStorage.setItem('rentTarget', this.newRentTarget);
             this.editingRentTarget = false;
             this.calculateTargetRentPercent();
         },
@@ -574,22 +560,6 @@ export default {
                 counts.pendingOnTime
             ];
         }
-
-        // calculateRentalsPerDay() {
-        //     const rentalsPerDay = ['2023-10-23', '2023-10-24'];
-
-        //     for (const rental of this.rentals) {
-        //         const rentalDate = new Date(rental.data_aluguel);
-        //         const dayOfWeek = rentalDate.getDay();
-
-        //         const mappedDayOfWeek = ((dayOfWeek + 6) % 7) + 1;
-
-        //         rentalsPerDay[mappedDayOfWeek - 1]++;
-        //         console.log(rentalDate);
-        //     }
-
-        //     return;
-        // }
     },
 
     watch: {

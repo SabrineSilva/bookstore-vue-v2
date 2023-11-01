@@ -138,8 +138,9 @@
                                 @click="openInfoDialog(item)"
                                 v-bind="attrs"
                                 v-on="on"
+                                large
                             >
-                                mdi-information-outline
+                                mdi-information-symbol
                             </v-icon>
                         </template>
                         <span>Detalhes</span>

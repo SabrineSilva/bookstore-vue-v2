@@ -119,8 +119,9 @@
                                 @click="openInfoDialog(item)"
                                 v-bind="attrs"
                                 v-on="on"
+                                large
                             >
-                                mdi-information-outline
+                                mdi-information-symbol
                             </v-icon>
                         </template>
                         <span>Detalhes</span>
@@ -232,7 +233,6 @@ export default {
         listAll() {
             PublisherApi.listAll().then((response) => {
                 this.publisher = response.data;
-              
             });
         },
 

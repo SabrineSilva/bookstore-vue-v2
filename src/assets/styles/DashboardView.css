@@ -33,79 +33,43 @@ span.text-toolbar-title {
     background-position: center;
 }
 
-.container-dashboard {
-    margin-top: 20px;
-}
-
 .custom-container {
     height: 400px;
     overflow: auto;
 }
 
-.first-value {
-    font-size: 23px;
+.responsive-table {
+    display: none;
+    overflow: auto;
+    height: 300px;
 }
 
-.second-value {
-    font-size: 15px;
-}
-
-.rent-target-row {
-    margin: 0;
-    display: flex;
-    justify-content: center;
-}
-
-.rent-target-title {
-    margin-left: auto;
-    font-weight: 500;
-}
-
-.rent-target-icon {
-    margin-left: auto;
-}
-
-.rent-target-icon:hover {
-    opacity: 0.5;
-    transition: all ease 0.5s;
-}
-
-@media (max-width: 1904px) {
-    .chart {
-        width: 500px;
+@media (max-width: 929px) {
+    .best-readers {
+        margin-left: 40px;
+        margin-right: 11px;
+    }
+    .most-rented {
+        margin-left: 40px;
     }
 }
 
-@media (max-width: 1331px) {
-    .chart {
-        width: 400px;
+@media (max-width: 879px) {
+    .best-readers {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+    .most-rented {
+        margin-left: 0px;
     }
 }
 
-@media (max-width: 1161px) {
-    .doughnutChart {
-        margin-left: auto;
-        margin-right: auto;
-        width: 300px;
+@media (max-width: 470px) {
+    .responsive-table {
+        display: block;
     }
-}
 
-@media (max-width: 673px) {
-    .doughnutChart {
-        width: 500px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-}
-
-@media (max-width: 539px) {
-    .doughnutChart {
-        width: auto;
-    }
-}
-
-@media (max-width: 457px) {
-    .chart {
-        width: 300px;
+    .table-dashboard {
+        display: none;
     }
 }
