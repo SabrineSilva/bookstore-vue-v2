@@ -10,87 +10,172 @@
             :header-props="{ sortByText: 'Ordenar por' }"
         >
             <template v-slot:top>
+                <v-toolbar flat class="mobile-toolbar-2">
+                    <div class="mobile-toolbar">
+                        <v-toolbar-title>Clientes</v-toolbar-title>
+                        <v-divider class="mx-4" inset vertical></v-divider>
+                        <v-dialog persistent v-model="dialog" max-width="500px">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn elevation="3" color="indigo lighten-1" v-bind="attrs" v-on="on" fab dark small>
+                                    <v-icon>mdi-plus</v-icon>
+                                </v-btn>
+                            </template>
+                            <v-card class="add-form rounded-xl pa-3">
+                                <v-card-title class="justify-space-between" style="margin-bottom: 10px">
+                                    <div class="dialog-header">
+                                        <span class="text-h5 form-title font-weight-medium">{{ formTitle }}</span>
+
+                                        <v-btn class="close-icon" icon @click="close">
+                                            <v-icon> mdi-close </v-icon>
+                                        </v-btn>
+                                    </div>
+                                </v-card-title>
+
+                                <v-card-text>
+                                    <v-form ref="form" lazy-validation>
+                                        <v-row>
+                                            <v-col>
+                                                <v-row class="mr-2" cols="12" sm="6" md="4">
+                                                    <v-text-field
+                                                        color="indigo lighten-1"
+                                                        required
+                                                        :rules="rules"
+                                                        v-model="userItem.name"
+                                                        label="Nome"
+                                                        append-icon="mdi-account"
+                                                    ></v-text-field>
+                                                </v-row>
+                                                <v-row class="mr-2" cols="12" sm="6" md="4">
+                                                    <v-text-field
+                                                        type="email"
+                                                        color="indigo lighten-1"
+                                                        required
+                                                        :rules="emailRules"
+                                                        v-model="userItem.email"
+                                                        label="E-mail"
+                                                        append-icon="mdi-email"
+                                                    ></v-text-field>
+                                                </v-row>
+                                                <v-row class="mr-2" cols="12" sm="6" md="4">
+                                                    <v-text-field
+                                                        color="indigo lighten-1"
+                                                        required
+                                                        :rules="rules"
+                                                        v-model="userItem.city"
+                                                        label="Cidade"
+                                                        append-icon="mdi-home-city"
+                                                    ></v-text-field>
+                                                </v-row>
+                                                <v-row class="mr-2" cols="12" sm="6" md="4">
+                                                    <v-text-field
+                                                        color="indigo lighten-1"
+                                                        required
+                                                        :rules="rules"
+                                                        v-model="userItem.address"
+                                                        label="Endereço"
+                                                        append-icon="mdi-map-marker"
+                                                    ></v-text-field>
+                                                </v-row>
+                                            </v-col>
+                                        </v-row>
+
+                                        <v-card-actions>
+                                            <div style="width: 100%" class="text-center">
+                                                <v-btn color="indigo lighten-1" text @click="onClickcreate">
+                                                    Salvar
+                                                </v-btn>
+                                            </div>
+                                        </v-card-actions>
+                                    </v-form>
+                                </v-card-text>
+                            </v-card>
+                        </v-dialog>
+                    </div>
+                </v-toolbar>
                 <v-toolbar flat>
-                    <v-toolbar-title>Clientes ({{ userCount }})</v-toolbar-title>
-                    <v-divider class="mx-4" inset vertical></v-divider>
+                    <div class="first-toolbar">
+                        <v-toolbar-title>Clientes ({{ userCount }})</v-toolbar-title>
+                        <v-divider class="mx-4" inset vertical></v-divider>
 
-                    <v-dialog persistent v-model="dialog" max-width="500px">
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn elevation="3" color="indigo lighten-1" v-bind="attrs" v-on="on" fab dark small>
-                                <v-icon>mdi-plus</v-icon>
-                            </v-btn>
-                        </template>
-                        <v-card class="add-form rounded-xl pa-3">
-                            <v-card-title class="justify-space-between" style="margin-bottom: 10px">
-                                <div class="dialog-header">
-                                    <span class="text-h5 form-title font-weight-medium">{{ formTitle }}</span>
+                        <v-dialog persistent v-model="dialog" max-width="500px">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn elevation="3" color="indigo lighten-1" v-bind="attrs" v-on="on" fab dark small>
+                                    <v-icon>mdi-plus</v-icon>
+                                </v-btn>
+                            </template>
+                            <v-card class="add-form rounded-xl pa-3">
+                                <v-card-title class="justify-space-between" style="margin-bottom: 10px">
+                                    <div class="dialog-header">
+                                        <span class="text-h5 form-title font-weight-medium">{{ formTitle }}</span>
 
-                                    <v-btn class="close-icon" icon @click="close">
-                                        <v-icon> mdi-close </v-icon>
-                                    </v-btn>
-                                </div>
-                            </v-card-title>
+                                        <v-btn class="close-icon" icon @click="close">
+                                            <v-icon> mdi-close </v-icon>
+                                        </v-btn>
+                                    </div>
+                                </v-card-title>
 
-                            <v-card-text>
-                                <v-form ref="form" lazy-validation>
-                                    <v-row>
-                                        <v-col>
-                                            <v-row class="mr-2" cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                    color="indigo lighten-1"
-                                                    required
-                                                    :rules="rules"
-                                                    v-model="userItem.name"
-                                                    label="Nome"
-                                                    append-icon="mdi-account"
-                                                ></v-text-field>
-                                            </v-row>
-                                            <v-row class="mr-2" cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                    type="email"
-                                                    color="indigo lighten-1"
-                                                    required
-                                                    :rules="emailRules"
-                                                    v-model="userItem.email"
-                                                    label="E-mail"
-                                                    append-icon="mdi-email"
-                                                ></v-text-field>
-                                            </v-row>
-                                            <v-row class="mr-2" cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                    color="indigo lighten-1"
-                                                    required
-                                                    :rules="rules"
-                                                    v-model="userItem.city"
-                                                    label="Cidade"
-                                                    append-icon="mdi-home-city"
-                                                ></v-text-field>
-                                            </v-row>
-                                            <v-row class="mr-2" cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                    color="indigo lighten-1"
-                                                    required
-                                                    :rules="rules"
-                                                    v-model="userItem.address"
-                                                    label="Endereço"
-                                                    append-icon="mdi-map-marker"
-                                                ></v-text-field>
-                                            </v-row>
-                                        </v-col>
-                                    </v-row>
+                                <v-card-text>
+                                    <v-form ref="form" lazy-validation>
+                                        <v-row>
+                                            <v-col>
+                                                <v-row class="mr-2" cols="12" sm="6" md="4">
+                                                    <v-text-field
+                                                        color="indigo lighten-1"
+                                                        required
+                                                        :rules="rules"
+                                                        v-model="userItem.name"
+                                                        label="Nome"
+                                                        append-icon="mdi-account"
+                                                    ></v-text-field>
+                                                </v-row>
+                                                <v-row class="mr-2" cols="12" sm="6" md="4">
+                                                    <v-text-field
+                                                        type="email"
+                                                        color="indigo lighten-1"
+                                                        required
+                                                        :rules="emailRules"
+                                                        v-model="userItem.email"
+                                                        label="E-mail"
+                                                        append-icon="mdi-email"
+                                                    ></v-text-field>
+                                                </v-row>
+                                                <v-row class="mr-2" cols="12" sm="6" md="4">
+                                                    <v-text-field
+                                                        color="indigo lighten-1"
+                                                        required
+                                                        :rules="rules"
+                                                        v-model="userItem.city"
+                                                        label="Cidade"
+                                                        append-icon="mdi-home-city"
+                                                    ></v-text-field>
+                                                </v-row>
+                                                <v-row class="mr-2" cols="12" sm="6" md="4">
+                                                    <v-text-field
+                                                        color="indigo lighten-1"
+                                                        required
+                                                        :rules="rules"
+                                                        v-model="userItem.address"
+                                                        label="Endereço"
+                                                        append-icon="mdi-map-marker"
+                                                    ></v-text-field>
+                                                </v-row>
+                                            </v-col>
+                                        </v-row>
 
-                                    <v-card-actions>
-                                        <div style="width: 100%" class="text-center">
-                                            <v-btn color="indigo lighten-1" text @click="onClickcreate"> Salvar </v-btn>
-                                        </div>
-                                    </v-card-actions>
-                                </v-form>
-                            </v-card-text>
-                        </v-card>
-                    </v-dialog>
+                                        <v-card-actions>
+                                            <div style="width: 100%" class="text-center">
+                                                <v-btn color="indigo lighten-1" text @click="onClickcreate">
+                                                    Salvar
+                                                </v-btn>
+                                            </div>
+                                        </v-card-actions>
+                                    </v-form>
+                                </v-card-text>
+                            </v-card>
+                        </v-dialog>
 
-                    <v-spacer></v-spacer>
-
+                        <v-spacer></v-spacer>
+                    </div>
                     <v-text-field
                         v-model="search"
                         append-icon="mdi-magnify"

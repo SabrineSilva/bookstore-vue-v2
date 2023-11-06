@@ -1,9 +1,10 @@
 <template>
     <v-app>
-        <Menu></Menu>
         <div class="main-content">
             <router-view class="custom-content"></router-view>
         </div>
+
+        <Menu></Menu>
     </v-app>
 </template>
 

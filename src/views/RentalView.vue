@@ -8,106 +8,220 @@
             :footer-props="{ itemsPerPageText: 'Registros por página:', itemsPerPageAllText: 'Exibir tudo' }"
             :header-props="{ sortByText: 'Ordenar por' }"
             :options="tableOptions"
+            mobile-breakpoint="882"
         >
             <template v-slot:top>
+                <v-toolbar flat class="mobile-toolbar-2">
+                    <div class="mobile-toolbar">
+                        <v-toolbar-title>Aluguéis ({{ rentalCount }})</v-toolbar-title>
+                        <v-divider class="mx-4" inset vertical></v-divider>
+                        <v-dialog persistent v-model="dialog" max-width="500px">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn elevation="3" color="indigo lighten-1" v-bind="attrs" v-on="on" fab dark small>
+                                    <v-icon>mdi-plus</v-icon>
+                                </v-btn>
+                            </template>
+                            <v-card class="add-form rounded-xl pa-3">
+                                <v-card-title class="justify-space-between" style="margin-bottom: 10px">
+                                    <div class="dialog-header">
+                                        <span class="text-h5 form-title font-weight-medium">{{ formTitle }}</span>
+
+                                        <v-btn class="close-icon" icon @click="close">
+                                            <v-icon>mdi-close</v-icon>
+                                        </v-btn>
+                                    </div>
+                                </v-card-title>
+                                <v-card-text>
+                                    <v-form ref="form" lazy-validation>
+                                        <v-row>
+                                            <v-col>
+                                                <v-row class="mr-2" cols="12" sm="6" md="4">
+                                                    <v-autocomplete
+                                                        color="indigo lighten-1"
+                                                        item-text="name"
+                                                        item-value="id"
+                                                        v-model="rentalItem.bookId"
+                                                        :items="calculateAvailableBooks()"
+                                                        label="Livro"
+                                                        placeholder="Selecionar..."
+                                                        required
+                                                        :rules="rules"
+                                                        :disabled="isEditing"
+                                                        no-data-text="Nenhum resultado encontrado"
+                                                    >
+                                                        <template v-slot:item="{ item }">
+                                                            <v-list-item-content>
+                                                                <v-list-item-title v-html="item.name">
+                                                                </v-list-item-title>
+                                                                <v-list-item-subtitle
+                                                                    v-html="item.author"
+                                                                ></v-list-item-subtitle>
+                                                                <v-list-item-subtitle
+                                                                    v-html="item.publisherName"
+                                                                ></v-list-item-subtitle>
+                                                            </v-list-item-content>
+                                                        </template>
+                                                    </v-autocomplete>
+                                                </v-row>
+                                                <v-row class="mr-2" cols="12" sm="6" md="4">
+                                                    <v-autocomplete
+                                                        color="indigo lighten-1"
+                                                        item-text="name"
+                                                        item-value="id"
+                                                        v-model="rentalItem.userId"
+                                                        :items="users"
+                                                        label="Cliente"
+                                                        placeholder="Selecionar..."
+                                                        required
+                                                        :rules="rules"
+                                                        :disabled="isEditing"
+                                                        no-data-text="Nenhum resultado encontrado"
+                                                    >
+                                                        <template v-slot:item="{ item }">
+                                                            <v-list-item-content>
+                                                                <v-list-item-title
+                                                                    v-html="item.name"
+                                                                ></v-list-item-title>
+                                                                <v-list-item-subtitle
+                                                                    v-html="item.email"
+                                                                ></v-list-item-subtitle>
+                                                            </v-list-item-content>
+                                                        </template>
+                                                    </v-autocomplete>
+                                                </v-row>
+
+                                                <v-row class="mr-2" cols="12" sm="6" md="4">
+                                                    <v-text-field
+                                                        type="date"
+                                                        color="indigo lighten-1"
+                                                        required
+                                                        :rules="rules"
+                                                        v-model="rentalItem.deadline"
+                                                        label="Previsão de Devolução"
+                                                        :min="isEditingDate"
+                                                    ></v-text-field>
+                                                </v-row>
+                                            </v-col>
+                                        </v-row>
+                                        <v-card-actions>
+                                            <div style="width: 100%" class="text-center">
+                                                <v-btn color="indigo lighten-1" text @click="onClickSave">
+                                                    Salvar
+                                                </v-btn>
+                                            </div>
+                                        </v-card-actions>
+                                    </v-form>
+                                </v-card-text>
+                            </v-card>
+                        </v-dialog>
+                    </div>
+                </v-toolbar>
                 <v-toolbar flat>
-                    <v-toolbar-title>Aluguéis</v-toolbar-title>
-                    <v-divider class="mx-4" inset vertical></v-divider>
-                    <v-dialog persistent v-model="dialog" max-width="500px">
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn elevation="3" color="indigo lighten-1" v-bind="attrs" v-on="on" fab dark small>
-                                <v-icon>mdi-plus</v-icon>
-                            </v-btn>
-                        </template>
-                        <v-card class="add-form rounded-xl pa-3">
-                            <v-card-title class="justify-space-between" style="margin-bottom: 10px">
-                                <div class="dialog-header">
-                                    <span class="text-h5 form-title font-weight-medium">{{ formTitle }}</span>
+                    <div class="first-toolbar">
+                        <v-toolbar-title>Aluguéis ({{ rentalCount }})</v-toolbar-title>
+                        <v-divider class="mx-4" inset vertical></v-divider>
+                        <v-dialog persistent v-model="dialog" max-width="500px">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn elevation="3" color="indigo lighten-1" v-bind="attrs" v-on="on" fab dark small>
+                                    <v-icon>mdi-plus</v-icon>
+                                </v-btn>
+                            </template>
+                            <v-card class="add-form rounded-xl pa-3">
+                                <v-card-title class="justify-space-between" style="margin-bottom: 10px">
+                                    <div class="dialog-header">
+                                        <span class="text-h5 form-title font-weight-medium">{{ formTitle }}</span>
 
-                                    <v-btn class="close-icon" icon @click="close">
-                                        <v-icon>mdi-close</v-icon>
-                                    </v-btn>
-                                </div>
-                            </v-card-title>
-                            <v-card-text>
-                                <v-form ref="form" lazy-validation>
-                                    <v-row>
-                                        <v-col>
-                                            <v-row class="mr-2" cols="12" sm="6" md="4">
-                                                <v-autocomplete
-                                                    color="indigo lighten-1"
-                                                    item-text="name"
-                                                    item-value="id"
-                                                    v-model="rentalItem.bookId"
-                                                    :items="calculateAvailableBooks()"
-                                                    label="Livro"
-                                                    placeholder="Selecionar..."
-                                                    required
-                                                    :rules="rules"
-                                                    :disabled="isEditing"
-                                                    no-data-text="Nenhum resultado encontrado"
-                                                >
-                                                    <template v-slot:item="{ item }">
-                                                        <v-list-item-content>
-                                                            <v-list-item-title v-html="item.name"> </v-list-item-title>
-                                                            <v-list-item-subtitle
-                                                                v-html="item.author"
-                                                            ></v-list-item-subtitle>
-                                                            <v-list-item-subtitle
-                                                                v-html="item.publisherName"
-                                                            ></v-list-item-subtitle>
-                                                        </v-list-item-content>
-                                                    </template>
-                                                </v-autocomplete>
-                                            </v-row>
-                                            <v-row class="mr-2" cols="12" sm="6" md="4">
-                                                <v-autocomplete
-                                                    color="indigo lighten-1"
-                                                    item-text="name"
-                                                    item-value="id"
-                                                    v-model="rentalItem.userId"
-                                                    :items="users"
-                                                    label="Cliente"
-                                                    placeholder="Selecionar..."
-                                                    required
-                                                    :rules="rules"
-                                                    :disabled="isEditing"
-                                                    no-data-text="Nenhum resultado encontrado"
-                                                >
-                                                    <template v-slot:item="{ item }">
-                                                        <v-list-item-content>
-                                                            <v-list-item-title v-html="item.name"></v-list-item-title>
-                                                            <v-list-item-subtitle
-                                                                v-html="item.email"
-                                                            ></v-list-item-subtitle>
-                                                        </v-list-item-content>
-                                                    </template>
-                                                </v-autocomplete>
-                                            </v-row>
+                                        <v-btn class="close-icon" icon @click="close">
+                                            <v-icon>mdi-close</v-icon>
+                                        </v-btn>
+                                    </div>
+                                </v-card-title>
+                                <v-card-text>
+                                    <v-form ref="form" lazy-validation>
+                                        <v-row>
+                                            <v-col>
+                                                <v-row class="mr-2" cols="12" sm="6" md="4">
+                                                    <v-autocomplete
+                                                        color="indigo lighten-1"
+                                                        item-text="name"
+                                                        item-value="id"
+                                                        v-model="rentalItem.bookId"
+                                                        :items="calculateAvailableBooks()"
+                                                        label="Livro"
+                                                        placeholder="Selecionar..."
+                                                        required
+                                                        :rules="rules"
+                                                        :disabled="isEditing"
+                                                        no-data-text="Nenhum resultado encontrado"
+                                                    >
+                                                        <template v-slot:item="{ item }">
+                                                            <v-list-item-content>
+                                                                <v-list-item-title v-html="item.name">
+                                                                </v-list-item-title>
+                                                                <v-list-item-subtitle
+                                                                    v-html="item.author"
+                                                                ></v-list-item-subtitle>
+                                                                <v-list-item-subtitle
+                                                                    v-html="item.publisherName"
+                                                                ></v-list-item-subtitle>
+                                                            </v-list-item-content>
+                                                        </template>
+                                                    </v-autocomplete>
+                                                </v-row>
+                                                <v-row class="mr-2" cols="12" sm="6" md="4">
+                                                    <v-autocomplete
+                                                        color="indigo lighten-1"
+                                                        item-text="name"
+                                                        item-value="id"
+                                                        v-model="rentalItem.userId"
+                                                        :items="users"
+                                                        label="Cliente"
+                                                        placeholder="Selecionar..."
+                                                        required
+                                                        :rules="rules"
+                                                        :disabled="isEditing"
+                                                        no-data-text="Nenhum resultado encontrado"
+                                                    >
+                                                        <template v-slot:item="{ item }">
+                                                            <v-list-item-content>
+                                                                <v-list-item-title
+                                                                    v-html="item.name"
+                                                                ></v-list-item-title>
+                                                                <v-list-item-subtitle
+                                                                    v-html="item.email"
+                                                                ></v-list-item-subtitle>
+                                                            </v-list-item-content>
+                                                        </template>
+                                                    </v-autocomplete>
+                                                </v-row>
 
-                                            <v-row class="mr-2" cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                    type="date"
-                                                    color="indigo lighten-1"
-                                                    required
-                                                    :rules="rules"
-                                                    v-model="rentalItem.deadline"
-                                                    label="Previsão de Devolução"
-                                                    :min="isEditingDate"
-                                                ></v-text-field>
-                                            </v-row>
-                                        </v-col>
-                                    </v-row>
-                                    <v-card-actions>
-                                        <div style="width: 100%" class="text-center">
-                                            <v-btn color="indigo lighten-1" text @click="onClickSave"> Salvar </v-btn>
-                                        </div>
-                                    </v-card-actions>
-                                </v-form>
-                            </v-card-text>
-                        </v-card>
-                    </v-dialog>
-                    <v-spacer></v-spacer>
+                                                <v-row class="mr-2" cols="12" sm="6" md="4">
+                                                    <v-text-field
+                                                        type="date"
+                                                        color="indigo lighten-1"
+                                                        required
+                                                        :rules="rules"
+                                                        v-model="rentalItem.deadline"
+                                                        label="Previsão de Devolução"
+                                                        :min="isEditingDate"
+                                                    ></v-text-field>
+                                                </v-row>
+                                            </v-col>
+                                        </v-row>
+                                        <v-card-actions>
+                                            <div style="width: 100%" class="text-center">
+                                                <v-btn color="indigo lighten-1" text @click="onClickSave">
+                                                    Salvar
+                                                </v-btn>
+                                            </div>
+                                        </v-card-actions>
+                                    </v-form>
+                                </v-card-text>
+                            </v-card>
+                        </v-dialog>
+                        <v-spacer></v-spacer>
+                    </div>
+
                     <v-text-field
                         v-model="search"
                         append-icon="mdi-magnify"
@@ -116,15 +230,6 @@
                         hide-details
                     ></v-text-field>
                 </v-toolbar>
-                <!-- <v-toolbar flat class="mb-5">
-                    <template>
-                        <v-tabs v-model="model" centered slider-color="indigo">
-                            <v-tab @click="listAll()"> Todos </v-tab>
-                            <v-tab @click="listPending()"> Pendentes </v-tab>
-                            <v-tab @click="listReturned()"> Devolvidos </v-tab>
-                        </v-tabs>
-                    </template>
-                </v-toolbar> -->
             </template>
 
             <template v-slot:[`item.status`]="{ item }">
@@ -243,6 +348,7 @@ export default {
         books: [],
         users: [],
         error: [],
+        rentalCount: 0,
 
         dialog: false,
         showInfoDialog: false,
@@ -313,6 +419,7 @@ export default {
         this.listAll();
         this.loadBookList();
         this.loadUserList();
+        this.calculateTotalRentals();
     },
 
     methods: {
@@ -515,6 +622,16 @@ export default {
         calculateAvailableBooks() {
             const availableBooks = this.books.filter((book) => book.availableQuantity > 0);
             return availableBooks;
+        },
+
+        calculateTotalRentals() {
+            RentalApi.listAll()
+                .then((response) => {
+                    this.rentalCount = response.data.length;
+                })
+                .catch((error) => {
+                    console.error('Error fetching rentals:', error);
+                });
         }
     }
 };
