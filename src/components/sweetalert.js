@@ -65,7 +65,7 @@ export async function showAlertReturn(action) {
     });
 
     if (removeAlert.isDismissed) {
-        showAlertToast('error', 'A ação foi cancelada');
+      return; 
     } else if (removeAlert.isConfirmed) {
         action();
     }

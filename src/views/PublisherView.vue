@@ -14,7 +14,7 @@
                     <div class="mobile-toolbar">
                         <v-toolbar-title>Editoras ({{ publisherCount }})</v-toolbar-title>
                         <v-divider class="mx-4" inset vertical></v-divider>
-                        <v-dialog persistent v-model="dialog" max-width="500px">
+                        <v-dialog :retain-focus="false" persistent v-model="dialog" max-width="500px">
                             <template v-slot:activator="{ on, attrs }">
                                 <v-btn elevation="3" color="indigo lighten-1" v-bind="attrs" v-on="on" fab dark small>
                                     <v-icon>mdi-plus</v-icon>
@@ -77,7 +77,7 @@
                         <v-toolbar-title>Editoras ({{ publisherCount }})</v-toolbar-title>
                         <v-divider class="mx-4" inset vertical></v-divider>
 
-                        <v-dialog persistent v-model="dialog" max-width="500px">
+                        <v-dialog :retain-focus="false" persistent v-model="dialog" max-width="500px">
                             <template v-slot:activator="{ on, attrs }">
                                 <v-btn elevation="3" color="indigo lighten-1" v-bind="attrs" v-on="on" fab dark small>
                                     <v-icon>mdi-plus</v-icon>
